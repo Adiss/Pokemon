@@ -3,6 +3,10 @@
  */
 package hu.experiment_team;
 
+import hu.experiment_team.dao.Dao;
+import hu.experiment_team.models.Pokemon;
+import hu.experiment_team.models.Trainer;
+
 /**
  * Main class of the application.
  * @author Jakab �d�m

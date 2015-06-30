@@ -3,13 +3,16 @@
  */
 package hu.experiment_team;
 
+import hu.experiment_team.dao.TrainerDaoJDBC;
+import hu.experiment_team.models.Trainer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * This class do the registration and login.
- * @author Jakab Ádám
+ * @author Jakab ï¿½dï¿½m
  * */
 public enum UserMethods {
     /**
@@ -19,25 +22,25 @@ public enum UserMethods {
 
     /**
      * This method registers the user.
-     * @param rusername Entered username of the user
-     * @param rpassword First entered password of the user
-     * @param rpassword2 Second entered password of the user
-     * @param remail Entered email of the user
+     * @param rUsername Entered username of the user
+     * @param rPassword First entered password of the user
+     * @param rPassword2 Second entered password of the user
+     * @param rEmail Entered email of the user
      * @return Errors as a String list
      * */
-    public List<String> register(String rusername, String rpassword, String rpassword2,String remail) {
+    public List<String> register(String rUsername, String displayName, String rPassword, String rPassword2,String rEmail) {
         List<String> errors = new ArrayList<>();
 
-        if(!Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$").matcher(remail).matches()){ errors.add("Ez az email-cim nem valodi."); }
-        if(Dao.INSTANCE.checkUserByEmail(remail)){ errors.add("Mar van felhasznalo ilyen e-mail cimmel."); }
-        if(Dao.INSTANCE.checkUserByName(rusername)){ errors.add("Mar van felhasznalo ilyen nevvel."); }
-        if(!rpassword.equals(rpassword2)){ errors.add("A ket beirt jelszo nem egyezik meg."); }
-        if(rusername.length() < 2){ errors.add("A felhasznalonev tol rovid."); }
-        if(rusername.length() > 32){ errors.add("A felhasznalonev tol hosszu."); }
-        if(rpassword.length() < 3){ errors.add("A jelszo tul rovid."); }
-        if(rpassword.length() > 32){ errors.add("A jelszo tul hosszu."); }
+        if(!Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$").matcher(rEmail).matches()){ errors.add("Ez az email-cim nem valodi."); }
+        if(TrainerDaoJDBC.INSTANCE.selectByEmail(rEmail) != null){ errors.add("Mar van felhasznalo ilyen e-mail cimmel."); }
+        if(TrainerDaoJDBC.INSTANCE.selectByName(rUsername) != null){ errors.add("Mar van felhasznalo ilyen nevvel."); }
+        if(!rPassword.equals(rPassword2)){ errors.add("A ket beirt jelszo nem egyezik meg."); }
+        if(rUsername.length() < 2){ errors.add("A felhasznalonev tol rovid."); }
+        if(rUsername.length() > 32){ errors.add("A felhasznalonev tol hosszu."); }
+        if(rPassword.length() < 3){ errors.add("A jelszo tul rovid."); }
+        if(rPassword.length() > 32){ errors.add("A jelszo tul hosszu."); }
         if(errors.isEmpty()){
-            Dao.INSTANCE.insertUser(rusername, Utility.INSTANCE.SHA1(rusername, rpassword), remail);
+            TrainerDaoJDBC.INSTANCE.insert(new Trainer.Builder(rUsername, displayName, Utility.INSTANCE.SHA1(rUsername, rPassword), rEmail).build());
             errors.add("Sikeres regisztracio!");
             return errors;
         } else {
@@ -47,16 +50,19 @@ public enum UserMethods {
 
     /**
      * Log in the user.
-     * @param lusername Username of the user
-     * @param lpassword Password of the user
+     * @param lUsername Username of the user
+     * @param lPassword Password of the user
      * @return The user as Trainer object
      * */
-    public Trainer login (String lusername, String lpassword){
-        Trainer user = null;
-        if(Dao.INSTANCE.checkUserByName(lusername) && Dao.INSTANCE.checkUserByPassword(Utility.INSTANCE.SHA1(lusername, lpassword))){
-            user = Dao.INSTANCE.getUserBySHAPass(Utility.INSTANCE.SHA1(lusername, lpassword));
-        }
+    public Trainer login (String lUsername, String lPassword){
+        Trainer user = TrainerDaoJDBC.INSTANCE.selectByPassword(Utility.INSTANCE.SHA1(lUsername, lPassword));
+        if(user != null)
+            user.setOnline(1);
         return user;
+    }
+
+    public void logout(Trainer t){
+        t.setOnline(0);
     }
 
 }

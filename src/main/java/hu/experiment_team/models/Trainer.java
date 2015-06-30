@@ -1,7 +1,7 @@
 /**
  * Created by Jakab on 2015.06.28..
  */
-package hu.experiment_team;
+package hu.experiment_team.models;
 
 import java.sql.Date;
 import java.util.List;
@@ -48,6 +48,10 @@ public class Trainer {
      * Amount of looses
      * */
     private int matchLoose;
+    /**
+     * Online status of the palyer
+     * */
+    private int online;
 
     /**
      * This inner class builds the object.
@@ -71,6 +75,7 @@ public class Trainer {
          * Email of the user.
          * */
         private String email;
+
         /**
          * The date when the user registered.
          * */
@@ -78,37 +83,43 @@ public class Trainer {
         /**
          * List of actually carried pokemons
          * */
-        private List<Pokemon> partyPokemons;
+        private List<Pokemon> partyPokemons = null;
         /**
          * Number of active ( healthy ) pokemons
          * */
-        private int activePokemons;
+        private int activePokemons = 0;
         /**
          * Amount of wins
          * */
-        private int matchWin;
+        private int matchWin = 0;
         /**
          * Amount of looses
          * */
-        private int matchLoose;
+        private int matchLoose = 0;
+        /**
+         * Online status of the palyer
+         * */
+        private int online;
 
         /**
          * Constructor.
          * @param username Username of the user
+         * @param displayName Display name of the user
          * @param password Password of the user
          * @param email Email of the user
          * */
-        public Builder(String username, String password, String email){
+        public Builder(String username, String displayName, String password, String email){
             this.username = username;
+            this.displayName = displayName;
             this.password = password;
             this.email = email;
         }
         public Builder register_date(Date val){ register_date = val; return this; }
-        public Builder displayName(String val){ displayName = val; return this; }
         public Builder partyPokemons(List<Pokemon> val){ this.partyPokemons = val; return this; }
         public Builder activePokemons(int val){ this.activePokemons = val; return this; }
         public Builder matchWin(int val){ matchWin = val; return this; }
         public Builder matchLoose(int val){ matchLoose = val; return this; }
+        public Builder online(int val){ online = val; return this; }
         public Trainer build(){ return new Trainer(this); }
 
     }
@@ -127,6 +138,7 @@ public class Trainer {
         this.activePokemons = builder.activePokemons;
         this.matchWin = builder.matchWin;
         this.matchLoose = builder.matchLoose;
+        this.online = builder.online;
     }
 
     /**
@@ -166,6 +178,8 @@ public class Trainer {
      * */
     public int getMatchLoose() { return matchLoose; }
 
+    public int getOnline() { return online; }
+
     /**
      * @param displayName Display name of the user
      * */
@@ -186,5 +200,7 @@ public class Trainer {
      * @param matchLoose Amount of looses
      * */
     public void setMatchLoose(int matchLoose) { this.matchLoose = matchLoose; }
+
+    public void setOnline(int online) { this.online = online; }
 
 }
