@@ -55,7 +55,8 @@ public enum Dao {
      * @param email Email address of the user
      * @return Return true if the user exist, else false
      * */
-    public Boolean checkUserByEmail(String email){
+     @Deprecated
+     public Boolean checkUserByEmail(String email){
         Boolean exist = false;
         String selectStatement = "SELECT id FROM users WHERE email = ?;";
         try{
@@ -78,7 +79,8 @@ public enum Dao {
      * @param name Username of the user
      * @return Return true if the user exist, else false
      * */
-    public Boolean checkUserByName(String name){
+     @Deprecated
+     public Boolean checkUserByName(String name){
         Boolean exist = false;
         String selectStatement = "SELECT id FROM users WHERE username = ?;";
         try{
@@ -101,7 +103,8 @@ public enum Dao {
      * @param pw Password of the user
      * @return Return true if the user exist, else false
      * */
-    public Boolean checkUserByPassword(String pw){
+     @Deprecated
+     public Boolean checkUserByPassword(String pw){
         Boolean exist = false;
         String selectStatement = "SELECT id FROM users WHERE password = ?;";
         try{
@@ -124,7 +127,8 @@ public enum Dao {
      * @param name Username of the user
      * @return Returns the user as Trainer object if user exists else null
      * */
-    public Trainer getUserBySHAPass(String name){
+     @Deprecated
+     public Trainer getUserBySHAPass(String name){
         Trainer user = null;
         String selectStatement = "SELECT * FROM users WHERE password = ?;";
         try{
@@ -152,7 +156,8 @@ public enum Dao {
      * @param  rpassword The users choosen password
      * @param  remail The users email address
      * */
-    public void insertUser(String rusername, String rpassword, String remail){
+     @Deprecated
+     public void insertUser(String rusername, String rpassword, String remail){
         String insertStatement = "INSERT INTO users (username, password, email) VALUES(?, ?, ?);";
         try{
             Class.forName("com.mysql.jdbc.Driver");
@@ -174,7 +179,8 @@ public enum Dao {
      * @param pokemonId the id of the pokemon
      * @return the Pokemon object with the base stats (Not owned pokemon stats), or null on error
      * */
-    public Pokemon getBasePokemonById(int pokemonId){
+     @Deprecated
+     public Pokemon getBasePokemonById(int pokemonId){
         Pokemon p = null;
         String selectStatement = "SELECT * FROM pokemons WHERE id = ?;";
         try{
@@ -226,7 +232,8 @@ public enum Dao {
      * @param trainerId Id of the trainer who will owns the pokemon
      * @param pokemonId Id of the pokemon which will be owned
      * */
-    public void addOwnedPokemon(int trainerId, int pokemonId){
+     @Deprecated
+     public void addOwnedPokemon(int trainerId, int pokemonId){
         String insertStatement = "INSERT INTO ownedPokemons VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Pokemon p = getBasePokemonById(pokemonId);
         List<Integer> moveIds = getKnownMove(1, pokemonId);
@@ -290,7 +297,8 @@ public enum Dao {
      * @param trainerId Id of the trainer, who owns the pokemons
      * @return List of owned pokemons or an empty list on error
      * */
-    public List<Pokemon> getOwnedPokemons(int trainerId){
+     @Deprecated
+     public List<Pokemon> getOwnedPokemons(int trainerId){
         List<Pokemon> listOfOwnedPokemons = new ArrayList<>();
         String selectStatement = "SELECT * FROM ownedPokemons WHERE ownerId = ?;";
         try{
@@ -351,7 +359,8 @@ public enum Dao {
      * @param moveId Id of the move
      * @return The Move object, or null on error
      * */
-    public Move getMoveById(int moveId){
+     @Deprecated
+     public Move getMoveById(int moveId){
         Move m = null;
         String selectStatement = "SELECT * FROM moves WHERE id = ?;";
         try{
@@ -388,7 +397,8 @@ public enum Dao {
      * @param pokemonId Id of the pokemon
      * @return Returns the list of moves
      * */
-    public List<Integer> getKnownMove(int level, int pokemonId){
+     @Deprecated
+     public List<Integer> getKnownMove(int level, int pokemonId){
         List<Integer> moveIds = new ArrayList<>();
         String selectStatement = "SELECT moveId FROM pokemonmovesbylevel WHERE level <= ? AND pokemonId = ? ORDER BY level DESC LIMIT 4";
         try{
@@ -414,7 +424,7 @@ public enum Dao {
     /**
      * This method close the mysql connection.
      * */
-    private void close() {
+     private void close() {
         try {
             if (rs != null) {
                 rs.close();
