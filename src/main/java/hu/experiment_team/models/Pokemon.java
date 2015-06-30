@@ -249,5 +249,6 @@ public class Pokemon {
     public void setMove2Id(int val){ this.move2Id = val; }
     public void setMove3Id(int val){ this.move3Id = val; }
     public void setMove4Id(int val){ this.move4Id = val; }
+    public void setCurrentXp(int val){ this.currentXp = val; }
 
 }
