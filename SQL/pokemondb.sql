@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2015-06-30 00:22:44
+Date: 2015-06-30 16:47:16
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -15229,13 +15229,24 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `displayName` varchar(255) NOT NULL,
   `password` varchar(255) CHARACTER SET utf8 NOT NULL,
   `email` varchar(255) CHARACTER SET utf8 NOT NULL,
   `register_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `PartyPokemon1` int(5) DEFAULT NULL,
+  `PartyPokemon2` int(5) DEFAULT NULL,
+  `PartyPokemon3` int(5) DEFAULT NULL,
+  `PartyPokemon4` int(5) DEFAULT NULL,
+  `PartyPokemon5` int(5) DEFAULT NULL,
+  `PartyPokemon6` int(5) DEFAULT NULL,
+  `ActivePokemon` int(1) DEFAULT '0',
+  `wins` int(10) DEFAULT '0',
+  `looses` int(10) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('23', 'adiss', 'c95ed69df44491d6119dcae0c38d41bf2d1bc829', 'adiss.b17@gmail.com', '2015-06-28 17:39:05');
+INSERT INTO `users` VALUES ('24', 'adiss', 'Adiss', 'c95ed69df44491d6119dcae0c38d41bf2d1bc829', 'adiss.b17@gmail.com', '2015-06-30 16:24:16', null, null, null, null, null, null, null, null, null);
+INSERT INTO `users` VALUES ('25', 'teszt', 'teszt', '19454f9ee61866035ddacf0c713e8d2deb580439', 'teszt@teszt.hu', '2015-06-30 16:30:29', null, null, null, null, null, null, null, null, null);
