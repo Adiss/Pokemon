@@ -99,7 +99,7 @@ public class Trainer {
         /**
          * Online status of the palyer
          * */
-        private int online;
+        private int online = 0;
 
         /**
          * Constructor.
