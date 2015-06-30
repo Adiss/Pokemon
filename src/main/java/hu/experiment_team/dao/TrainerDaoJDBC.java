@@ -55,12 +55,12 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
             rs = prepStmt.executeQuery();
             if(rs.next()){
                 List<Pokemon> partyPokemons = new ArrayList<Pokemon>(){{
-                    this.add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon1")));
-                    this.add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon2")));
-                    this.add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon3")));
-                    this.add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon4")));
-                    this.add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon5")));
-                    this.add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon6")));
+                    add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon1")));
+                    add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon2")));
+                    add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon3")));
+                    add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon4")));
+                    add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon5")));
+                    add(PokemonDaoJDBC.INSTANCE.getBasePokemonById(rs.getInt("PartyPokemon6")));
                 }};
                 t = new Trainer.Builder(rs.getString("username"), rs.getString("displayName"), rs.getString("password"), rs.getString("email"))
                         .partyPokemons(partyPokemons)
@@ -99,7 +99,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
                 }};
                 t = new Trainer.Builder(rs.getString("username"), rs.getString("displayName"), rs.getString("password"), rs.getString("email"))
                         .partyPokemons(partyPokemons)
-                        .activePokemons(rs.getInt("ActivePokemons"))
+                        .activePokemons(rs.getInt("ActivePokemon"))
                         .matchWin(rs.getInt("wins"))
                         .matchLoose(rs.getInt("looses"))
                         .register_date(rs.getDate("register_date"))
