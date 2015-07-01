@@ -13,6 +13,10 @@ import java.util.List;
 public class Trainer {
 
     /**
+     * Database ID of the trainer
+     * */
+    private int id;
+    /**
      * Username of the user.
      * */
     private String username;
@@ -59,6 +63,10 @@ public class Trainer {
      * */
     public static class Builder {
 
+        /**
+         * Database ID of the trainer
+         * */
+        private int id;
         /**
          * Username of the user.
          * */
@@ -120,6 +128,7 @@ public class Trainer {
         public Builder matchWin(int val){ matchWin = val; return this; }
         public Builder matchLoose(int val){ matchLoose = val; return this; }
         public Builder online(int val){ online = val; return this; }
+        public Builder id(int val){ id = val; return this; }
         public Trainer build(){ return new Trainer(this); }
 
     }
@@ -129,6 +138,7 @@ public class Trainer {
      * @param builder Data came from the builder class
      * */
     private Trainer(Builder builder){
+        this.id = builder.id;
         this.username = builder.username;
         this.displayName = builder.displayName;
         this.password = builder.password;
@@ -177,8 +187,14 @@ public class Trainer {
      * @return Amount os looses
      * */
     public int getMatchLoose() { return matchLoose; }
-
+    /**
+     * @return The player's online status
+     * */
     public int getOnline() { return online; }
+    /**
+     * @return The trainer's database id
+     * */
+    public int getId() { return id; }
 
     /**
      * @param displayName Display name of the user
@@ -200,7 +216,9 @@ public class Trainer {
      * @param matchLoose Amount of looses
      * */
     public void setMatchLoose(int matchLoose) { this.matchLoose = matchLoose; }
-
+    /**
+     * @param online Set the trainer's online status
+     * */
     public void setOnline(int online) { this.online = online; }
 
 }
