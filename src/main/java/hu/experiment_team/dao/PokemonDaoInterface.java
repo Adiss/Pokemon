@@ -10,4 +10,6 @@ public interface PokemonDaoInterface {
     Pokemon getBasePokemonById(int pokemonId);
     void addOwnedPokemon(int trainerId, int pokemonId);
     List<Pokemon> getOwnedPokemons(int trainerId);
+    Pokemon resetPokemon(int ownedID);
+    Pokemon getRandomPokemon();
 }
