@@ -8,6 +8,7 @@ import hu.experiment_team.models.Pokemon;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public enum PokemonDaoJDBC implements PokemonDaoInterface {
     INSTANCE;
@@ -71,7 +72,7 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
 
     @Override
     public void addOwnedPokemon(int trainerId, int pokemonId){
-        String insertStatement = "INSERT INTO ownedPokemons VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertStatement = "INSERT INTO `ownedpokemons` (`ownerId`, `pokemonId`, `displayName`, `internalName`, `kind`, `pokeDex`, `type1`, `type2`, `level`, `hp`, `attack`, `defense`, `speed`, `spAttack`, `spDefense`, `currentXp`, `rareness`, `baseXp`, `happiness`, `growthRate`, `stepsToHatch`, `color`, `habitat`, `effortPointsHp`, `effortPointsAttack`, `effortPointsDefense`, `effortPointsSpeed`, `effortPointsSPAttack`, `effortPointsSPDefense`, `hiddenAbility`, `compatibility`, `height`, `weight`, `genderRate`, `battlerPlayerY`, `battlerEnemyY`, `battlerAltitude`, `move1Id`, `move2Id`, `move3Id`, `move4Id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         Pokemon p = getBasePokemonById(pokemonId);
         List<Integer> moveIds = MoveDaoJDBC.INSTANCE.getKnownMove(1, pokemonId);
         try {
@@ -170,10 +171,11 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
                                 .ownerId(rs.getInt("ownerId"))
                                 .level(rs.getInt("level"))
                                 .currentXp(rs.getInt("currentXp"))
-                                .move1Id(rs.getInt("moveId1"))
-                                .move2Id(rs.getInt("moveId2"))
-                                .move3Id(rs.getInt("moveId3"))
-                                .move4Id(rs.getInt("moveId4"))
+                                .move1Id(rs.getInt("move1Id"))
+                                .move2Id(rs.getInt("move2Id"))
+                                .move3Id(rs.getInt("move3Id"))
+                                .move4Id(rs.getInt("move4Id"))
+                                .ownedID(rs.getInt("id"))
                                 .build());
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -184,6 +186,113 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
             close();
         }
         return listOfOwnedPokemons;
+    }
+
+    @Override
+    public Pokemon resetPokemon(int ownedID){
+        Pokemon p = null;
+        String selectStatement = "SELECT * FROM ownedPokemons WHERE id = ?;";
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(host, username, password);
+            prepStmt = conn.prepareStatement(selectStatement);
+            prepStmt.setInt(1, ownedID);
+            rs = prepStmt.executeQuery();
+            while(rs.next()){
+                p = new Pokemon.Builder(rs.getInt("pokemonId"), rs.getString("displayName"), rs.getString("internalName"), rs.getInt("hp"), rs.getInt("attack"), rs.getInt("defense"), rs.getInt("speed"), rs.getInt("spAttack"), rs.getInt("spDefense"))
+                        .kind(rs.getString("kind"))
+                        .pokeDex(rs.getString("pokeDex"))
+                        .type1(rs.getString("type1"))
+                        .type2(rs.getString("type2"))
+                        .rareness(rs.getInt("rareness"))
+                        .baseExp(rs.getInt("baseXp"))
+                        .happiness(rs.getInt("happiness"))
+                        .growthRate(rs.getString("growthRate"))
+                        .stepsToHatch(rs.getInt("stepsToHatch"))
+                        .color(rs.getString("color"))
+                        .habitat(rs.getString("habitat"))
+                        .effortPointsHp(rs.getInt("effortPointsHp"))
+                        .effortPointsAttack(rs.getInt("effortPointsAttack"))
+                        .effortPointsDefense(rs.getInt("effortPointsDefense"))
+                        .effortPointsSpeed(rs.getInt("effortPointsSpeed"))
+                        .effortPointsSpAttack(rs.getInt("effortPointsSPAttack"))
+                        .effortPointsSpDefense(rs.getInt("effortPointsSPDefense"))
+                        .hiddenAbility(rs.getString("hiddenAbility"))
+                        .compatibility(rs.getString("compatibility"))
+                        .height(rs.getDouble("height"))
+                        .weight(rs.getDouble("weight"))
+                        .genderRate(rs.getString("genderRate"))
+                        .battlerPlayerY(rs.getInt("battlerPlayerY"))
+                        .battlerEnemyY(rs.getInt("battlerEnemyY"))
+                        .battlerAltitude(rs.getInt("battlerAltitude"))
+                        .ownerId(rs.getInt("ownerId"))
+                        .level(rs.getInt("level"))
+                        .currentXp(rs.getInt("currentXp"))
+                        .move1Id(rs.getInt("move1Id"))
+                        .move2Id(rs.getInt("move2Id"))
+                        .move3Id(rs.getInt("move3Id"))
+                        .move4Id(rs.getInt("move4Id"))
+                        .ownedID(rs.getInt("id"))
+                        .build();
+        }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+        return p;
+    }
+
+    @Override
+    public Pokemon getRandomPokemon(){
+        Random r = new Random();
+        Pokemon p = null;
+        String selectStatement = "SELECT * FROM pokemons WHERE id = ?;";
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(host, username, password);
+            prepStmt = conn.prepareStatement(selectStatement);
+            prepStmt.setInt(1, r.nextInt(649-1) + 1);
+            rs = prepStmt.executeQuery();
+            while(rs.next()){
+                p = new Pokemon.Builder(rs.getInt("id"), rs.getString("displayName"), rs.getString("internalName"), rs.getInt("hp"), rs.getInt("attack"), rs.getInt("defense"), rs.getInt("speed"), rs.getInt("spAttack"), rs.getInt("spDefense"))
+                        .kind(rs.getString("kind"))
+                        .pokeDex(rs.getString("pokeDex"))
+                        .type1(rs.getString("type1"))
+                        .type2(rs.getString("type2"))
+                        .rareness(rs.getInt("rareness"))
+                        .baseExp(rs.getInt("baseXp"))
+                        .happiness(rs.getInt("happiness"))
+                        .growthRate(rs.getString("growthRate"))
+                        .stepsToHatch(rs.getInt("stepsToHatch"))
+                        .color(rs.getString("color"))
+                        .habitat(rs.getString("habitat"))
+                        .effortPointsHp(rs.getInt("effortPointsHp"))
+                        .effortPointsAttack(rs.getInt("effortPointsAttack"))
+                        .effortPointsDefense(rs.getInt("effortPointsDefense"))
+                        .effortPointsSpeed(rs.getInt("effortPointsSpeed"))
+                        .effortPointsSpAttack(rs.getInt("effortPointsSPAttack"))
+                        .effortPointsSpDefense(rs.getInt("effortPointsSPDefense"))
+                        .hiddenAbility(rs.getString("hiddenAbility"))
+                        .compatibility(rs.getString("compatibility"))
+                        .height(rs.getDouble("height"))
+                        .weight(rs.getDouble("weight"))
+                        .genderRate(rs.getString("genderRate"))
+                        .battlerPlayerY(rs.getInt("battlerPlayerY"))
+                        .battlerEnemyY(rs.getInt("battlerEnemyY"))
+                        .battlerAltitude(rs.getInt("battlerAltitude"))
+                        .build();
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+        return p;
     }
 
     private void close() {
