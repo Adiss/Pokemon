@@ -68,6 +68,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
                         .matchWin(rs.getInt("wins"))
                         .matchLoose(rs.getInt("looses"))
                         .register_date(rs.getDate("register_date"))
+                        .id(rs.getInt("id"))
                         .build();
             }
         } catch (Exception e) {
@@ -103,6 +104,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
                         .matchWin(rs.getInt("wins"))
                         .matchLoose(rs.getInt("looses"))
                         .register_date(rs.getDate("register_date"))
+                        .id(rs.getInt("id"))
                         .build();
             }
         } catch (Exception e) {
@@ -138,6 +140,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
                         .matchWin(rs.getInt("wins"))
                         .matchLoose(rs.getInt("looses"))
                         .register_date(rs.getDate("register_date"))
+                        .id(rs.getInt("id"))
                         .build();
             }
         } catch (Exception e) {
