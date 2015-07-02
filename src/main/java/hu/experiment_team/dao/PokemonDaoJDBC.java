@@ -13,15 +13,37 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
+/**
+ * Ez az osztály fogja kezelni a pokémonokkal kapcsolatos adatbázis műveleteket.
+ * Singleton osztály, nem kell példányosítani, az INSTANCE-on keresztül használható.
+ * */
 public enum PokemonDaoJDBC implements PokemonDaoInterface {
+
+    /**
+     * Ezen a mezőn keresztül érhetőek el az osztály metódusai.
+     * */
     INSTANCE;
-
+    /**
+     * Létrehozunk egy props változót a properties fájlnak, amiben az adatbázis eléréséhez szükséges információk vannak.
+     * */
     Properties props = new Properties();
-
+    /**
+     * This contains the actual connection.
+     * */
     private Connection conn = null;
+    /**
+     * This contains the mysql statement.
+     * */
     private PreparedStatement prepStmt = null;
+    /**
+     * This contains the result of the query.
+     * */
     private ResultSet rs = null;
 
+    /**
+     * A megadott pokémon ID alapján lekérdez az adatbázisból egy alap pokémont.
+     * @param pokemonId a pokémon adatbázis beli ID-je
+     * */
     @Override
     public Pokemon getBasePokemonById(int pokemonId){
 
@@ -78,6 +100,11 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
         return p;
     }
 
+    /**
+     * A megadott trainer ID és pokémon ID alapján hozzáad egy pokémont a trainer gyűjteményéhez.
+     * @param pokemonId A pokémon adatbázis beli ID-je
+     * @param trainerId A trainer adatbázis beli ID-je
+     * */
     @Override
     public void addOwnedPokemon(int trainerId, int pokemonId){
 
@@ -145,6 +172,10 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
         }
     }
 
+    /**
+     * A megadott trainer ID alapján lekérdezi az adott trainer összes birtolokt pokémonját.
+     * @param trainerId A trainer adatbázis beli ID-je
+     * */
     @Override
     public List<Pokemon> getOwnedPokemons(int trainerId){
 
@@ -210,6 +241,10 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
         return listOfOwnedPokemons;
     }
 
+    /**
+     * Az adott pokémon ID-ja alapján reseteli a pokémont, azaz a statjait frissíti.
+     * @param ownedID Annak a kifejezett pokémonnak az ID-je az ownedPokemons táblából, amelyiket resetelni akarjuk.
+     * */
     @Override
     public Pokemon resetPokemon(int ownedID){
 
@@ -274,6 +309,9 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
         return p;
     }
 
+    /**
+     * Kiválaszt egy random alap pokémont az adatbázisból.
+     * */
     @Override
     public Pokemon getRandomPokemon(){
 
@@ -331,6 +369,9 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
         return p;
     }
 
+    /**
+     * Ez a függvény fogja lezárni az adatbázis kapcsolatokat.
+     * */
     private void close() {
         try {
             if (rs != null) {

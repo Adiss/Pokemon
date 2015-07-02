@@ -15,6 +15,7 @@ import java.util.Properties;
 /**
  * Ez az osztály fogja kezelni a képességekkel kapcsolatos adatbázis műveleteket.
  * Singleton osztály, nem kell példányosítani, az INSTANCE-on keresztül használható.
+ * @author Jakab Ádám
  * */
 public enum MoveDaoJDBC implements MoveDaoInterface {
 

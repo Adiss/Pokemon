@@ -16,15 +16,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Ez az osztály fogja kezelni a trainerekkel (felhasználókkal) kapcsolatos adatbázis műveleteket.
+ * Singleton osztály, nem kell példányosítani, az INSTANCE-on keresztül használható.
+ * */
 public enum TrainerDaoJDBC implements TrainerDaoInterface {
+
+    /**
+     * Ezen a mezőn keresztül érhetőek el az osztály metódusai.
+     * */
     INSTANCE;
-
+    /**
+     * Létrehozunk egy props változót a properties fájlnak, amiben az adatbázis eléréséhez szükséges információk vannak.
+     * */
     Properties props = new Properties();
-
+    /**
+     * This contains the actual connection.
+     * */
     private Connection conn = null;
+    /**
+     * This contains the mysql statement.
+     * */
     private PreparedStatement prepStmt = null;
+    /**
+     * This contains the result of the query.
+     * */
     private ResultSet rs = null;
 
+    /**
+     * Hozzáad egy trainert (felhasználót) az adatbázishoz.
+     * @param trainer A trainer osztály egy példánya a megfelelő mezőkkel feltöltve.
+     * */
     @Override
     public void insert(Trainer t){
 
@@ -51,6 +73,10 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
         }
     }
 
+    /**
+     * Kiválaszt egy trainert (felhasználót) a neve alapján.
+     * @param username A trainer felhasználó neve.
+     * */
     @Override
     public Trainer selectByName(String name){
 
@@ -94,6 +120,11 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
         return t;
     }
 
+    /**
+     * Kiválaszt egy trainert (felhasználót) a jelszava alapján.
+     * Ennek a jelszónak már az SHA1 kódolt jelszónak kell lennie.
+     * @param password SHA1 kódolt jelszó.
+     * */
     @Override
     public Trainer selectByPassword(String pass){
 
@@ -137,6 +168,10 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
         return t;
     }
 
+    /**
+     * Kiválaszt egy trainert (felhasználót) az e-mail címe alapján.
+     * @param email A trainer email címe.
+     * */
     @Override
     public Trainer selectByEmail(String email){
 
@@ -180,6 +215,9 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
         return t;
     }
 
+    /**
+     * Ez a függvény fogja lezárni az adatbázis kapcsolatokat.
+     * */
     private void close() {
         try {
             if (rs != null) {
