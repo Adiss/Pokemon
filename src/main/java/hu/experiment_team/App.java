@@ -1,6 +1,3 @@
-/**
- * Created by Jakab on 2015.06.27..
- */
 package hu.experiment_team;
 
 import hu.experiment_team.models.Trainer;

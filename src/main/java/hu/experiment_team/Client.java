@@ -1,6 +1,3 @@
-/**
- * Created by Jakab on 2015.06.28..
- */
 package hu.experiment_team;
 
 import java.io.*;

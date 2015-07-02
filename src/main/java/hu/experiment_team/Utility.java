@@ -1,6 +1,3 @@
-/**
- * Created by Jakab on 2015.06.28..
- */
 package hu.experiment_team;
 
 import java.io.UnsupportedEncodingException;
@@ -9,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * This class contains the utility methods like password encryption to SHA1 etc..
- * @author Jakab Ádám
+ * @author Jakab ï¿½dï¿½m
  * */
 public enum Utility {
     /**

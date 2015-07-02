@@ -1,6 +1,3 @@
-/**
- * Created by Jakab on 2015.06.28..
- */
 package hu.experiment_team;
 
 import java.io.*;
@@ -71,9 +68,7 @@ public class Server {
 
                 if(this.socket != null) this.socket.close();
                 if(this.in != null) this.in.close();
-            } catch(IOException e){
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch(IOException | ClassNotFoundException e){
                 e.printStackTrace();
             }
         }
@@ -100,7 +95,7 @@ public class Server {
                 } else if(((String) inputObject).contains("!getMyIp")){
                     getMyIp();
                 } else {
-                    System.out.println((String)inputObject + " | FROM: " + socket);
+                    System.out.println(inputObject + " | FROM: " + socket);
                     this.out.writeObject("Server got your message!");
                     this.out.flush();
                 }
@@ -133,9 +128,6 @@ public class Server {
             return player;
         }
 
-        /**
-         * @param  from
-         * */
         private void sendWhisper(int from, int to, String message){
             try {
                 Object msg = "From " + from +  " to " + to + ": " + message;
