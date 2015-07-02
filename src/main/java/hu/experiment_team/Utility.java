@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * This class contains the utility methods like password encryption to SHA1 etc..
- * @author Jakab �d�m
+ * @author Jakab Ádám
  * */
 public enum Utility {
     /**

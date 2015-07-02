@@ -192,4 +192,13 @@ public class Move {
     public String getContestType() { return contestType; }
     public String getDescription() { return description; }
 
+    @Override
+    public String toString() {
+        return "Name: " + displayName +
+                ", baseDamage: " + baseDamage +
+                ", type: '" + type + '\'' +
+                ", accuracy: " + accuracy +
+                ", ID: " + Id;
+    }
+
 }

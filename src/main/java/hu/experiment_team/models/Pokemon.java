@@ -244,6 +244,10 @@ public class Pokemon {
      * */
     private int ownedID;
 
+    @Override
+    public String toString() {
+        return "Name: " + name + ", level: " + level + ", ID: " + ownedID;
+    }
 
 
     /**

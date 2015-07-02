@@ -1,5 +1,7 @@
 package hu.experiment_team;
 
+import hu.experiment_team.models.Trainer;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -94,6 +96,21 @@ public class Server {
                     getMyPort();
                 } else if(((String) inputObject).contains("!getMyIp")){
                     getMyIp();
+                } else if(((String) inputObject).contains("!login")) {
+                    System.out.println("'login' request from: " + socket.getPort() + " port.");
+                    List<String> loginData = new ArrayList<>();
+                    for(String s : ((String) inputObject).split(" ")){
+                        loginData.add(s);
+                        System.out.println(s);
+                    }
+                    Trainer user = UserMethods.INSTANCE.login(loginData.get(2), loginData.get(3));
+                    if(user != null){
+                        System.out.println("Socket " + socket.getPort()+ " has logged in!");
+                        this.out.writeObject("You are now logged in!");
+                        this.out.flush();
+                    } else {
+                        System.out.println("Socket " + socket.getPort()+ " failed to log in!");
+                    }
                 } else {
                     System.out.println(inputObject + " | FROM: " + socket);
                     this.out.writeObject("Server got your message!");

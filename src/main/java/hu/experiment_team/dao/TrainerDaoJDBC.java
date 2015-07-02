@@ -5,6 +5,7 @@ import hu.experiment_team.models.Trainer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -27,6 +28,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
      * Létrehozunk egy props változót a properties fájlnak, amiben az adatbázis eléréséhez szükséges információk vannak.
      * */
     Properties props = new Properties();
+    InputStream propFile = getClass().getResourceAsStream("/database.properties");
     /**
      * This contains the actual connection.
      * */
@@ -48,7 +50,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
     public void insert(Trainer t){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +80,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
     public Trainer selectByName(String name){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,7 +128,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
     public Trainer selectByPassword(String pass){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -173,7 +175,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
     public Trainer selectByEmail(String email){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

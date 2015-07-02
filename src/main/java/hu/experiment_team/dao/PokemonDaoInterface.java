@@ -33,4 +33,6 @@ public interface PokemonDaoInterface {
      * Kiválaszt egy random alap pokémont az adatbázisból.
      * */
     Pokemon getRandomPokemon();
+
+    Pokemon getOwnedPokemonById(int pokemonId);
 }

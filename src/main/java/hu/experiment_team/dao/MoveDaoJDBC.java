@@ -1,13 +1,16 @@
 package hu.experiment_team.dao;
 
 import hu.experiment_team.models.Move;
+import hu.experiment_team.models.Pokemon;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 /**
  * Ez az osztály fogja kezelni a képességekkel kapcsolatos adatbázis műveleteket.
@@ -24,6 +27,7 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
      * Létrehozunk egy props változót a properties fájlnak, amiben az adatbázis eléréséhez szükséges információk vannak.
      * */
     Properties props = new Properties();
+    InputStream propFile = getClass().getResourceAsStream("/database.properties");
     /**
      * This contains the actual connection.
      * */
@@ -45,7 +49,7 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
     public Move getMoveById(int moveId){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,7 +93,7 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
     public List<Integer> getKnownMove(int level, int pokemonId){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,6 +118,31 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
             close();
         }
         return moveIds;
+    }
+
+    /**
+     * Lekérdez az adatbázisból egy random képességet.
+     * */
+    @Override
+    public Move getRandomKnownMove(Pokemon p){
+        Random r = new Random();
+        int random = r.nextInt(4-1) + 1;
+        switch(random){
+            case 1:
+                if(p.getMove1Id() != 0)
+                    return getMoveById(p.getMove1Id());
+            case 2:
+                if(p.getMove2Id() != 0)
+                    return getMoveById(p.getMove2Id());
+            case 3:
+                if(p.getMove3Id() != 0)
+                    return getMoveById(p.getMove3Id());
+            case 4:
+                if(p.getMove4Id() != 0)
+                    return getMoveById(p.getMove4Id());
+            default:
+                return getMoveById(p.getMove1Id());
+        }
     }
 
     /**

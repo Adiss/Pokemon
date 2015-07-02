@@ -4,6 +4,7 @@ import hu.experiment_team.models.Pokemon;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
      * Létrehozunk egy props változót a properties fájlnak, amiben az adatbázis eléréséhez szükséges információk vannak.
      * */
     Properties props = new Properties();
+    InputStream propFile = getClass().getResourceAsStream("/database.properties");
     /**
      * This contains the actual connection.
      * */
@@ -45,7 +47,7 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
     public Pokemon getBasePokemonById(int pokemonId){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,8 +89,6 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
                         .battlerAltitude(rs.getInt("battlerAltitude"))
                         .build();
             }
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -106,7 +106,7 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
     public void addOwnedPokemon(int trainerId, int pokemonId){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -160,8 +160,6 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
             if(moveIds.size() >= 3) prepStmt.setInt(40, moveIds.get(2)); else prepStmt.setInt(40, 0);
             if(moveIds.size() == 4) prepStmt.setInt(41, moveIds.get(3)); else prepStmt.setInt(41, 0);
             prepStmt.executeUpdate();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -177,13 +175,13 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
     public List<Pokemon> getOwnedPokemons(int trainerId){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         List<Pokemon> listOfOwnedPokemons = new ArrayList<>();
-        String selectStatement = "SELECT * FROM ownedPokemons WHERE ownerId = ?;";
+        String selectStatement = "SELECT * FROM ownedpokemons WHERE ownerId = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
@@ -228,14 +226,78 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
                                 .ownedID(rs.getInt("id"))
                                 .build());
             }
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             close();
         }
         return listOfOwnedPokemons;
+    }
+
+    /**
+     * A megadott pokémon ID alapján lekérdezi az adott pokémont a birtokolt pokémonok közül.
+     * @param pokemonId A pokémon ownedPokemon tábla beli ID-je
+     * */
+    @Override
+    public Pokemon getOwnedPokemonById(int pokemonId){
+
+        try {
+            props.load(propFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Pokemon p = null;
+        String selectStatement = "SELECT * FROM ownedpokemons WHERE id = ?;";
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
+            prepStmt = conn.prepareStatement(selectStatement);
+            prepStmt.setInt(1, pokemonId);
+            rs = prepStmt.executeQuery();
+            while(rs.next()){
+                p = new Pokemon.Builder(rs.getInt("pokemonId"), rs.getString("displayName"), rs.getString("internalName"), rs.getInt("hp"), rs.getInt("attack"), rs.getInt("defense"), rs.getInt("speed"), rs.getInt("spAttack"), rs.getInt("spDefense"))
+                                .kind(rs.getString("kind"))
+                                .pokeDex(rs.getString("pokeDex"))
+                                .type1(rs.getString("type1"))
+                                .type2(rs.getString("type2"))
+                                .rareness(rs.getInt("rareness"))
+                                .baseExp(rs.getInt("baseXp"))
+                                .happiness(rs.getInt("happiness"))
+                                .growthRate(rs.getString("growthRate"))
+                                .stepsToHatch(rs.getInt("stepsToHatch"))
+                                .color(rs.getString("color"))
+                                .habitat(rs.getString("habitat"))
+                                .effortPointsHp(rs.getInt("effortPointsHp"))
+                                .effortPointsAttack(rs.getInt("effortPointsAttack"))
+                                .effortPointsDefense(rs.getInt("effortPointsDefense"))
+                                .effortPointsSpeed(rs.getInt("effortPointsSpeed"))
+                                .effortPointsSpAttack(rs.getInt("effortPointsSPAttack"))
+                                .effortPointsSpDefense(rs.getInt("effortPointsSPDefense"))
+                                .hiddenAbility(rs.getString("hiddenAbility"))
+                                .compatibility(rs.getString("compatibility"))
+                                .height(rs.getDouble("height"))
+                                .weight(rs.getDouble("weight"))
+                                .genderRate(rs.getString("genderRate"))
+                                .battlerPlayerY(rs.getInt("battlerPlayerY"))
+                                .battlerEnemyY(rs.getInt("battlerEnemyY"))
+                                .battlerAltitude(rs.getInt("battlerAltitude"))
+                                .ownerId(rs.getInt("ownerId"))
+                                .level(rs.getInt("level"))
+                                .currentXp(rs.getInt("currentXp"))
+                                .move1Id(rs.getInt("move1Id"))
+                                .move2Id(rs.getInt("move2Id"))
+                                .move3Id(rs.getInt("move3Id"))
+                                .move4Id(rs.getInt("move4Id"))
+                                .ownedID(rs.getInt("id"))
+                                .build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+        return p;
     }
 
     /**
@@ -246,7 +308,7 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
     public Pokemon resetPokemon(int ownedID){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -296,8 +358,6 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
                         .ownedID(rs.getInt("id"))
                         .build();
         }
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -313,7 +373,7 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
     public Pokemon getRandomPokemon(){
 
         try {
-            props.load(new FileInputStream("src/main/resources/database.properties"));
+            props.load(propFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -356,8 +416,6 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
                         .battlerAltitude(rs.getInt("battlerAltitude"))
                         .build();
             }
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

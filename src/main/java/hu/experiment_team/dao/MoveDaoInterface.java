@@ -1,6 +1,7 @@
 package hu.experiment_team.dao;
 
 import hu.experiment_team.models.Move;
+import hu.experiment_team.models.Pokemon;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface MoveDaoInterface {
      * @param pokemonId A pokémon ID-je
      * */
     List<Integer> getKnownMove(int level, int pokemonId);
+
+    Move getRandomKnownMove(Pokemon p);
 }
