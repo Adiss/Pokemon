@@ -1,20 +1,21 @@
+/**
+ * Created by Jakab on 2015.06.30..
+ */
 package hu.experiment_team.dao;
 
 import hu.experiment_team.models.Move;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-/**
- * Created by Jakab on 2015.06.30..
- */
 public enum MoveDaoJDBC implements MoveDaoInterface {
     INSTANCE;
 
-    private static final String host = "jdbc:mysql://127.0.0.1:3306/pokemondb";
-    private static final String username = "root";
-    private static final String password = "parro";
+    Properties props = new Properties();
 
     private Connection conn = null;
     private PreparedStatement prepStmt = null;
@@ -22,11 +23,18 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
 
     @Override
     public Move getMoveById(int moveId){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Move m = null;
         String selectStatement = "SELECT * FROM moves WHERE id = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setInt(1, moveId);
             rs = prepStmt.executeQuery();
@@ -54,11 +62,18 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
 
     @Override
     public List<Integer> getKnownMove(int level, int pokemonId){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         List<Integer> moveIds = new ArrayList<>();
         String selectStatement = "SELECT moveId FROM pokemonmovesbylevel WHERE level <= ? AND pokemonId = ? ORDER BY level DESC LIMIT 4";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setInt(1, level);
             prepStmt.setInt(2, pokemonId);

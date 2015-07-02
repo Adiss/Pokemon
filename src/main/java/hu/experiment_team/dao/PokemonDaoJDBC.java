@@ -5,17 +5,18 @@ package hu.experiment_team.dao;
 
 import hu.experiment_team.models.Pokemon;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 public enum PokemonDaoJDBC implements PokemonDaoInterface {
     INSTANCE;
 
-    private static final String host = "jdbc:mysql://127.0.0.1:3306/pokemondb";
-    private static final String username = "root";
-    private static final String password = "parro";
+    Properties props = new Properties();
 
     private Connection conn = null;
     private PreparedStatement prepStmt = null;
@@ -23,11 +24,18 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
 
     @Override
     public Pokemon getBasePokemonById(int pokemonId){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Pokemon p = null;
         String selectStatement = "SELECT * FROM pokemons WHERE id = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setInt(1, pokemonId);
             rs = prepStmt.executeQuery();
@@ -72,12 +80,19 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
 
     @Override
     public void addOwnedPokemon(int trainerId, int pokemonId){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String insertStatement = "INSERT INTO `ownedpokemons` (`ownerId`, `pokemonId`, `displayName`, `internalName`, `kind`, `pokeDex`, `type1`, `type2`, `level`, `hp`, `attack`, `defense`, `speed`, `spAttack`, `spDefense`, `currentXp`, `rareness`, `baseXp`, `happiness`, `growthRate`, `stepsToHatch`, `color`, `habitat`, `effortPointsHp`, `effortPointsAttack`, `effortPointsDefense`, `effortPointsSpeed`, `effortPointsSPAttack`, `effortPointsSPDefense`, `hiddenAbility`, `compatibility`, `height`, `weight`, `genderRate`, `battlerPlayerY`, `battlerEnemyY`, `battlerAltitude`, `move1Id`, `move2Id`, `move3Id`, `move4Id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         Pokemon p = getBasePokemonById(pokemonId);
         List<Integer> moveIds = MoveDaoJDBC.INSTANCE.getKnownMove(1, pokemonId);
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(insertStatement);
             prepStmt.setInt(1, trainerId);
             prepStmt.setInt(2, p.getId());
@@ -132,11 +147,18 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
 
     @Override
     public List<Pokemon> getOwnedPokemons(int trainerId){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         List<Pokemon> listOfOwnedPokemons = new ArrayList<>();
         String selectStatement = "SELECT * FROM ownedPokemons WHERE ownerId = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setInt(1, trainerId);
             rs = prepStmt.executeQuery();
@@ -190,11 +212,18 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
 
     @Override
     public Pokemon resetPokemon(int ownedID){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Pokemon p = null;
         String selectStatement = "SELECT * FROM ownedPokemons WHERE id = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setInt(1, ownedID);
             rs = prepStmt.executeQuery();
@@ -247,12 +276,19 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
 
     @Override
     public Pokemon getRandomPokemon(){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Random r = new Random();
         Pokemon p = null;
         String selectStatement = "SELECT * FROM pokemons WHERE id = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setInt(1, r.nextInt(649-1) + 1);
             rs = prepStmt.executeQuery();

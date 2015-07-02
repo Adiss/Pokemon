@@ -6,19 +6,20 @@ package hu.experiment_team.dao;
 import hu.experiment_team.models.Pokemon;
 import hu.experiment_team.models.Trainer;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public enum TrainerDaoJDBC implements TrainerDaoInterface {
     INSTANCE;
 
-    private static final String host = "jdbc:mysql://127.0.0.1:3306/pokemondb";
-    private static final String username = "root";
-    private static final String password = "parro";
+    Properties props = new Properties();
 
     private Connection conn = null;
     private PreparedStatement prepStmt = null;
@@ -26,10 +27,17 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
 
     @Override
     public void insert(Trainer t){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String insertStatement = "INSERT INTO users (username, displayName, password, email) VALUES(?, ?, ?, ?);";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(insertStatement);
             prepStmt.setString(1, t.getUsername());
             prepStmt.setString(2, t.getDisplayName());
@@ -45,11 +53,18 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
 
     @Override
     public Trainer selectByName(String name){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Trainer t = null;
         String selectStatement = "SELECT * FROM users WHERE username = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setString(1, name);
             rs = prepStmt.executeQuery();
@@ -81,11 +96,18 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
 
     @Override
     public Trainer selectByPassword(String pass){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Trainer t = null;
         String selectStatement = "SELECT * FROM users WHERE password = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setString(1, pass);
             rs = prepStmt.executeQuery();
@@ -117,11 +139,18 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
 
     @Override
     public Trainer selectByEmail(String email){
+
+        try {
+            props.load(new FileInputStream("src/main/resources/database.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Trainer t = null;
         String selectStatement = "SELECT * FROM users WHERE email = ?;";
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(host, username, password);
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
             prepStmt = conn.prepareStatement(selectStatement);
             prepStmt.setString(1, email);
             rs = prepStmt.executeQuery();
