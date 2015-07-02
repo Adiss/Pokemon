@@ -12,15 +12,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Ez az osztály fogja kezelni a képességekkel kapcsolatos adatbázis műveleteket.
+ * Singleton osztály, nem kell példányosítani, az INSTANCE-on keresztül használható.
+ * */
 public enum MoveDaoJDBC implements MoveDaoInterface {
+
+    /**
+     * Ezen a mezőn keresztül érhetőek el az osztály metódusai.
+     * */
     INSTANCE;
-
+    /**
+     * Létrehozunk egy props változót a properties fájlnak, amiben az adatbázis eléréséhez szükséges információk vannak.
+     * */
     Properties props = new Properties();
-
+    /**
+     * This contains the actual connection.
+     * */
     private Connection conn = null;
+    /**
+     * This contains the mysql statement.
+     * */
     private PreparedStatement prepStmt = null;
+    /**
+     * This contains the result of the query.
+     * */
     private ResultSet rs = null;
 
+    /**
+     * A megadott ID alapján lekérdez egy teljes képességet az adatbázisból.
+     * @param moveId A képesség adatbázis beli ID-je
+     * */
     @Override
     public Move getMoveById(int moveId){
 
@@ -60,6 +82,11 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
         return m;
     }
 
+    /**
+     * A megadott pokemon ID és szint alapján lekérdezi az adott pokemon adott szintjén és alatta tudható spelleket.
+     * @param level A pokémon szintje.
+     * @param pokemonId A pokémon ID-je
+     * */
     @Override
     public List<Integer> getKnownMove(int level, int pokemonId){
 
@@ -91,6 +118,9 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
         return moveIds;
     }
 
+    /**
+     * Ez a függvény fogja lezárni az adatbázis kapcsolatokat.
+     * */
     private void close() {
         try {
             if (rs != null) {
