@@ -45,7 +45,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
 
     /**
      * Hozzáad egy trainert (felhasználót) az adatbázishoz.
-     * @param trainer A trainer osztály egy példánya a megfelelő mezőkkel feltöltve.
+     * @param t A trainer osztály egy példánya a megfelelő mezőkkel feltöltve.
      * */
     @Override
     public void insert(Trainer t){
@@ -75,7 +75,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
 
     /**
      * Kiválaszt egy trainert (felhasználót) a neve alapján.
-     * @param username A trainer felhasználó neve.
+     * @param name A trainer felhasználó neve.
      * */
     @Override
     public Trainer selectByName(String name){
@@ -123,7 +123,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
     /**
      * Kiválaszt egy trainert (felhasználót) a jelszava alapján.
      * Ennek a jelszónak már az SHA1 kódolt jelszónak kell lennie.
-     * @param password SHA1 kódolt jelszó.
+     * @param pass SHA1 kódolt jelszó.
      * */
     @Override
     public Trainer selectByPassword(String pass){
