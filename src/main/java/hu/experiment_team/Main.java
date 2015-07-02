@@ -50,6 +50,11 @@ public class Main {
 
         Battle.INSTANCE.dealDamage(ownedPokemons.get(0), ownedPokemons.get(1), MoveDaoJDBC.INSTANCE.getMoveById(ownedPokemons.get(0).getMove1Id()));
 
+        ownedPokemons.set(1, PokemonDaoJDBC.INSTANCE.resetPokemon(ownedPokemons.get(1).getOwnedID()));
+        System.out.println("A pokemon HP-ja resetelve");
+
+        Battle.INSTANCE.dealDamage(ownedPokemons.get(0), ownedPokemons.get(1), MoveDaoJDBC.INSTANCE.getMoveById(ownedPokemons.get(0).getMove1Id()));
+
         /*
 
          Scanner scanIn = new Scanner(System.in);
