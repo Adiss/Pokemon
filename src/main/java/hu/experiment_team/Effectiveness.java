@@ -4,11 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Ebből az osztályból lehet lekérni az adott típushoz tartozó bónusz sebzést.
  * @author Jakab Ádám
  * */
 public enum Effectiveness {
+
+    /**
+     * Instance of the singleton class
+     * */
     INSTANCE;
 
+    /**
+     * A típusok bónusz sebzésének listája.
+     * A kulcs a két típus nevének összekulcsolása, az érték pedig a sebzésbónusz.
+     * */
     private static final Map<String, Double> typeEffectiveness;
     static {
         typeEffectiveness = new HashMap<>();
