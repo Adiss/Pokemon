@@ -9,12 +9,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
+/**
+ * A trainerek játékon belüli aktivitásának függvényei. NEM ACCOUNT FÜGGVÉNYEK!
+ * @author Jakab Ádám
+ * */
 public enum TrainerMethods {
 
+    /**
+     * Ezen a mezőn keresztül érhetőek el az osztály metódusai.
+     * */
     INSTANCE;
 
+    /**
+     * Ha meghívjuk, a trainer megkapja a birtokolt pokémonjai listáját, amiből kiválaszthat 6-ot amit megával akar vinni.
+     * @param t A trainer objektuma
+     * */
     public Trainer choosePartyPokemons(Trainer t){
 
         Scanner sc = new Scanner(new InputStreamReader(System.in));
@@ -36,6 +46,10 @@ public enum TrainerMethods {
         return t;
     }
 
+    /**
+     * Kiválaszt a trainernek 6 random pokémont a birtokolt pokémonok közzül, amit magával vihet.
+     * @param t A trainer objektuma
+     * */
     public Trainer chooseRandomPartyPokemons(Trainer t){
 
         List<Pokemon> ownedPokemons = PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t.getId());
