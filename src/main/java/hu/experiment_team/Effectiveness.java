@@ -23,7 +23,7 @@ public enum Effectiveness {
         typeEffectiveness = new HashMap<>();
         // NORMAL
         typeEffectiveness.put("NORMALNORMAL", 1.0); typeEffectiveness.put("NORMALFIRE", 1.0); typeEffectiveness.put("NORMALWATER", 1.0);typeEffectiveness.put("NORMALELECTRIC", 1.0);
-        typeEffectiveness.put("NORMALGRASS", 1.0);typeEffectiveness.put("NORMALICE", 1.0);typeEffectiveness.put("NORMALFIGHT", 1.0);typeEffectiveness.put("NORMALPOISON", 1.0);
+        typeEffectiveness.put("NORMALGRASS", 1.0);typeEffectiveness.put("NORMALICE", 1.0);typeEffectiveness.put("NORMALFIGHTING", 1.0);typeEffectiveness.put("NORMALPOISON", 1.0);
         typeEffectiveness.put("NORMALGROUND", 1.0);typeEffectiveness.put("NORMALFLYING", 1.0);typeEffectiveness.put("NORMALPSYCHIC", 1.0);typeEffectiveness.put("NORMALBUG", 1.0);
         typeEffectiveness.put("NORMALROCK", 0.5);typeEffectiveness.put("NORMALGHOST", 0.0);typeEffectiveness.put("NORMALDRAGON", 1.0);typeEffectiveness.put("NORMALDARK", 1.0);
         typeEffectiveness.put("NORMALSTEEL", 0.5);typeEffectiveness.put("NORMALFAIRY", 1.0);
@@ -95,7 +95,7 @@ public enum Effectiveness {
         typeEffectiveness.put("BUGSTEEL", 0.5);typeEffectiveness.put("BUGFAIRY", 0.5);
         // ROCK
         typeEffectiveness.put("ROCKNORMAL", 1.0);typeEffectiveness.put("ROCKFIRE", 2.0);typeEffectiveness.put("ROCKWATER", 1.0);typeEffectiveness.put("ROCKELECTRIC", 1.0);
-        typeEffectiveness.put("ROCKGRASS", 1.0);typeEffectiveness.put("ROCKICE", 2.0);typeEffectiveness.put("ROCKFIGHTINGING", 0.5);typeEffectiveness.put("ROCKPOISON", 1.0);
+        typeEffectiveness.put("ROCKGRASS", 1.0);typeEffectiveness.put("ROCKICE", 2.0);typeEffectiveness.put("ROCKFIGHTING", 0.5);typeEffectiveness.put("ROCKPOISON", 1.0);
         typeEffectiveness.put("ROCKGROUND", 0.5);typeEffectiveness.put("ROCKFLYING", 2.0);typeEffectiveness.put("ROCKPSYCHIC", 1.0);typeEffectiveness.put("ROCKBUG", 2.0);
         typeEffectiveness.put("ROCKROCK", 1.0);typeEffectiveness.put("ROCKGHOST", 1.0);typeEffectiveness.put("ROCKDRAGON", 1.0);typeEffectiveness.put("ROCKDARK", 1.0);
         typeEffectiveness.put("ROCKSTEEL", 0.5);typeEffectiveness.put("ROCKFAIRY", 1.0);
