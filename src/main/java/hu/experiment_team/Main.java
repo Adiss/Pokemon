@@ -1,6 +1,5 @@
 package hu.experiment_team;
 
-import hu.experiment_team.dao.MoveDaoJDBC;
 import hu.experiment_team.dao.PokemonDaoJDBC;
 import hu.experiment_team.models.Trainer;
 

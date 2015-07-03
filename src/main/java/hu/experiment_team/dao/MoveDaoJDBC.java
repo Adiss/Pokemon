@@ -3,7 +3,6 @@ package hu.experiment_team.dao;
 import hu.experiment_team.models.Move;
 import hu.experiment_team.models.Pokemon;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
