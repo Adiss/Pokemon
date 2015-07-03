@@ -1,5 +1,6 @@
 package hu.experiment_team;
 
+import hu.experiment_team.battleAI.BattleAI;
 import hu.experiment_team.dao.PokemonDaoJDBC;
 import hu.experiment_team.models.Trainer;
 
@@ -26,6 +27,16 @@ public class Main {
         t2 = TrainerMethods.INSTANCE.chooseRandomPartyPokemons(t2);
 
         Battle.INSTANCE.doBattle(t1, t2);
+        /*
+        * Teszt BattleAI
+        *
+        System.out.println("NextMove: ");
+        System.out.println("T1 Pokemon: " + PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t1.getId()).get(3));
+        System.out.println("T2 Pokemon: " + PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t2.getId()).get(1));
+        System.out.println(BattleAI.INSTANCE.calculateNextMove(PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t1.getId()).get(3), PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t2.getId()).get(1)));
+
+        * */
+
 
         /*
         * Server/Client jar file

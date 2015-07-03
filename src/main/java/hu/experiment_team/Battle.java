@@ -1,5 +1,6 @@
 package hu.experiment_team;
 
+import hu.experiment_team.battleAI.BattleAI;
 import hu.experiment_team.dao.MoveDaoJDBC;
 import hu.experiment_team.dao.PokemonDaoJDBC;
 import hu.experiment_team.models.Move;
@@ -49,7 +50,7 @@ public enum Battle {
                     System.out.println(MoveDaoJDBC.INSTANCE.getMoveById(t1Choosen.getMove3Id()));
                     System.out.println(MoveDaoJDBC.INSTANCE.getMoveById(t1Choosen.getMove4Id()));
                 Move t1ChoosenMove = MoveDaoJDBC.INSTANCE.getMoveById(Integer.parseInt(sc.nextLine()));
-                Move t2ChoosenMove = MoveDaoJDBC.INSTANCE.getRandomKnownMove(t2Choosen);
+                Move t2ChoosenMove = BattleAI.INSTANCE.calculateNextMove(t2Choosen, t1Choosen);
 
                 dealDamage(t1Choosen, t2Choosen, t1ChoosenMove);
 
@@ -100,5 +101,33 @@ public enum Battle {
             System.out.println(d.getName() + " now has " + d.getHp() + " health");
         }
     }
+
+    /**
+     * Visszaadja az ellenfél sebzés után maradt HP-ját
+     * @param a Object of the pokemon which deal the damage
+     * @param d Object of the pokemon which suffer the damage
+     * @param m Object of the move which being used by the attacker
+     * */
+    public int damageCalculator(Pokemon a, Pokemon d, Move m){
+
+        double damage = 0;
+
+        if(!m.getMoveCategory().equals("Status")){
+            double STAB = a.getType1().equals(m.getType()) || a.getType2().equals(m.getType()) ? 1.5 : 1.0;
+            double typeEffectiveness = Effectiveness.INSTANCE.get(m.getType(), d.getType1())*10;
+            double criticalStrikeChance = 1;
+            double others = 1;
+            Random r = new Random(); double rand = 0.85 + (1.0-0.85) * r.nextDouble();
+            double modifier = STAB * typeEffectiveness * criticalStrikeChance * others * rand;
+            if(m.getMoveCategory().equals("Physical"))
+                damage = Math.floor(Math.floor((Math.floor((Math.floor((Math.floor(((Math.floor((2*a.getLevel())/5)+2)*a.getAttack()*m.getBaseDamage())/d.getDefense()))/50)+2)*STAB))*typeEffectiveness)*rand);
+            else if(m.getMoveCategory().equals("Special"))
+                damage = Math.floor(Math.floor((Math.floor((Math.floor((Math.floor(((Math.floor((2*a.getLevel())/5)+2)*a.getSpAttack()*m.getBaseDamage())/d.getSpDefense()))/50)+2)*STAB))*typeEffectiveness)*rand);
+        }
+
+        return d.getHp()-(int)damage;
+    }
+
+
 
 }
