@@ -109,6 +109,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
                         .matchLoose(rs.getInt("looses"))
                         .register_date(rs.getDate("register_date"))
                         .id(rs.getInt("id"))
+                        .ownedPokemons(PokemonDaoJDBC.INSTANCE.getOwnedPokemons(rs.getInt("id")))
                         .build();
             }
         } catch (Exception e) {
@@ -157,6 +158,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
                         .matchLoose(rs.getInt("looses"))
                         .register_date(rs.getDate("register_date"))
                         .id(rs.getInt("id"))
+                        .ownedPokemons(PokemonDaoJDBC.INSTANCE.getOwnedPokemons(rs.getInt("id")))
                         .build();
             }
         } catch (Exception e) {
@@ -204,6 +206,7 @@ public enum TrainerDaoJDBC implements TrainerDaoInterface {
                         .matchLoose(rs.getInt("looses"))
                         .register_date(rs.getDate("register_date"))
                         .id(rs.getInt("id"))
+                        .ownedPokemons(PokemonDaoJDBC.INSTANCE.getOwnedPokemons(rs.getInt("id")))
                         .build();
             }
         } catch (Exception e) {

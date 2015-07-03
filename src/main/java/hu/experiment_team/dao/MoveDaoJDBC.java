@@ -129,19 +129,19 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
         int random = r.nextInt(4-1) + 1;
         switch(random){
             case 1:
-                if(p.getMove1Id() != 0)
-                    return getMoveById(p.getMove1Id());
+                if(p.getMove1() != null)
+                    return p.getMove1();
             case 2:
-                if(p.getMove2Id() != 0)
-                    return getMoveById(p.getMove2Id());
+                if(p.getMove2() != null)
+                    return p.getMove2();
             case 3:
-                if(p.getMove3Id() != 0)
-                    return getMoveById(p.getMove3Id());
+                if(p.getMove3() != null)
+                    return p.getMove3();
             case 4:
-                if(p.getMove4Id() != 0)
-                    return getMoveById(p.getMove4Id());
+                if(p.getMove4() != null)
+                    return p.getMove4();
             default:
-                return getMoveById(p.getMove1Id());
+                return p.getMove1();
         }
     }
 

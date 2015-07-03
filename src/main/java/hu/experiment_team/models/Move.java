@@ -197,8 +197,7 @@ public class Move {
         return "Name: " + displayName +
                 ", baseDamage: " + baseDamage +
                 ", type: '" + type + '\'' +
-                ", accuracy: " + accuracy +
-                ", ID: " + Id;
+                ", accuracy: " + accuracy;
     }
 
 }

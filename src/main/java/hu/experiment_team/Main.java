@@ -1,6 +1,6 @@
 package hu.experiment_team;
 
-import hu.experiment_team.battleAI.BattleAI;
+import hu.experiment_team.dao.MoveDaoJDBC;
 import hu.experiment_team.dao.PokemonDaoJDBC;
 import hu.experiment_team.models.Trainer;
 
@@ -15,18 +15,17 @@ public class Main {
         Trainer t1 = UserMethods.INSTANCE.login("adiss", "422341");
         Trainer t2 = UserMethods.INSTANCE.login("teszt", "teszt");
 
-        int t2OwnedSize = PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t2.getId()).size();
-        int t1OwnedSize = PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t1.getId()).size();
-        if(t2OwnedSize < 10)
-            for(int i = t2OwnedSize; i <= 10; i++)
-                PokemonDaoJDBC.INSTANCE.addOwnedPokemon(t2.getId(), PokemonDaoJDBC.INSTANCE.getRandomPokemon().getId());
-        if(t1OwnedSize < 10)
-            for(int i = t1OwnedSize; i <= 10; i++)
-                PokemonDaoJDBC.INSTANCE.addOwnedPokemon(t1.getId(), PokemonDaoJDBC.INSTANCE.getRandomPokemon().getId());
+        if(t2.getOwnedPokemons().size() < 10)
+            for(int i = t2.getOwnedPokemons().size(); i <= 10; i++)
+                t2.addPokemon(PokemonDaoJDBC.INSTANCE.getRandomPokemon());
+        if(t1.getOwnedPokemons().size() < 10)
+            for(int i = t1.getOwnedPokemons().size(); i <= 10; i++)
+                t1.addPokemon(PokemonDaoJDBC.INSTANCE.getRandomPokemon());
 
-        t2 = TrainerMethods.INSTANCE.chooseRandomPartyPokemons(t2);
+        t2.chooseRandomPartyPokemons();
 
         Battle.INSTANCE.doBattle(t1, t2);
+
         /*
         * Teszt BattleAI
         *
@@ -34,7 +33,6 @@ public class Main {
         System.out.println("T1 Pokemon: " + PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t1.getId()).get(3));
         System.out.println("T2 Pokemon: " + PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t2.getId()).get(1));
         System.out.println(BattleAI.INSTANCE.calculateNextMove(PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t1.getId()).get(3), PokemonDaoJDBC.INSTANCE.getOwnedPokemons(t2.getId()).get(1)));
-
         * */
 
 

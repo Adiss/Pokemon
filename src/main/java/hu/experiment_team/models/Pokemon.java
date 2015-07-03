@@ -1,5 +1,9 @@
 package hu.experiment_team.models;
 
+import hu.experiment_team.Effectiveness;
+
+import java.util.Random;
+
 /**
  * This class contains information about the pokemons.
  * @author Jakab Ádám
@@ -222,31 +226,65 @@ public class Pokemon {
      * A pokémon első képessége
      * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
-    private int move1Id;
+    private Move move1;
     /**
      * A pokémon második képessége
      * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
-    private int move2Id;
+    private Move move2;
     /**
      * A pokémon harmadik képessége
      * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
-    private int move3Id;
+    private Move move3;
     /**
      * A pokémon negyedik képessége
      * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
-    private int move4Id;
+    private Move move4;
     /**
      * Annak a pokémonnak az id-je amit birtokolnak. Ez egyedi.
      * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
     private int ownedID;
+    /**
+     * Ez a flag jelzi, hogy a pokémonon van-e Burn debuff
+     * */
+    private boolean haveBurn;
+    /**
+     * Ez az érték mutatja a pokémon maximális HP-ját.
+     * Erre az effektek miatt van szükség.
+     * */
+    private int maxHp;
+    /**
+     * Ez az érték mutatja a pokémon maximális Attack-ját.
+     * Erre az effektek miatt van szükség.
+     * */
+    private int maxAttack;
+    /**
+     * Ez az érték mutatja a pokémon maximális Defense-ét.
+     * Erre az effektek miatt van szükség.
+     * */
+    private int maxDefense;
+    /**
+     * Ez az érték mutatja a pokémon maximális Special Attack-ját.
+     * Erre az effektek miatt van szükség.
+     * */
+    private int maxSpecialAttack;
+    /**
+     * Ez az érték mutatja a pokémon maximális Special Defense-ét.
+     * Erre az effektek miatt van szükség.
+     * */
+    private int maxSpecialDefense;
+    /**
+     * Ez az érték mutatja a pokémon maximális Speed-jét.
+     * Erre az effektek miatt van szükség.
+     * */
+    private int maxSpeed;
 
     @Override
     public String toString() {
-        return "Name: " + name + ", level: " + level + ", ID: " + ownedID;
+        return "Name: " + name + ", level: " + level;
     }
 
 
@@ -297,10 +335,10 @@ public class Pokemon {
         private int battlerAltitude = 0;
         private int level = 1;
         private int evasion = 100;
-        private int move1Id = 0;
-        private int move2Id = 0;
-        private int move3Id = 0;
-        private int move4Id = 0;
+        private Move move1 = null;
+        private Move move2 = null;
+        private Move move3 = null;
+        private Move move4 = null;
         private int ownedID = 0;
 
         public Builder(int id, String name, String internalName, int hp, int attack, int defense, int speed, int spAttack, int spDefense){
@@ -344,10 +382,10 @@ public class Pokemon {
         public Builder battlerAltitude(int val){ battlerAltitude = val; return this; }
         public Builder level(int val){ level = val; return this; }
         public Builder evasion(int val){ evasion = val; return this; }
-        public Builder move1Id(int val){ move1Id = val; return this; }
-        public Builder move2Id(int val){ move2Id = val; return this; }
-        public Builder move3Id(int val){ move3Id = val; return this; }
-        public Builder move4Id(int val){ move4Id = val; return this; }
+        public Builder move1(Move val){ move1 = val; return this; }
+        public Builder move2(Move val){ move2 = val; return this; }
+        public Builder move3(Move val){ move3 = val; return this; }
+        public Builder move4(Move val){ move4 = val; return this; }
         public Builder ownedID(int val){ ownedID = val; return this; }
         public Pokemon build(){ return new Pokemon(this); }
 
@@ -392,11 +430,17 @@ public class Pokemon {
         battlerAltitude = builder.battlerAltitude;
         level = builder.level;
         evasion = builder.evasion;
-        move1Id = builder.move1Id;
-        move2Id = builder.move2Id;
-        move3Id = builder.move3Id;
-        move4Id = builder.move4Id;
+        move1 = builder.move1;
+        move2 = builder.move2;
+        move3 = builder.move3;
+        move4 = builder.move4;
         ownedID = builder.ownedID;
+        maxHp = builder.hp;
+        maxAttack = builder.attack;
+        maxDefense = builder.defense;
+        maxSpecialAttack = builder.spAttack;
+        maxSpecialDefense = builder.spDefense;
+        maxSpeed = builder.speed;
     }
 
     /**
@@ -440,22 +484,91 @@ public class Pokemon {
     public int getBattlerAltitude() { return battlerAltitude; }
     public int getLevel() { return level; }
     public int getEvasion() { return evasion; }
-    public int getMove1Id() { return move1Id; }
-    public int getMove2Id() { return move2Id; }
-    public int getMove3Id() { return move3Id; }
-    public int getMove4Id() { return move4Id; }
+    public Move getMove1() { return move1; }
+    public Move getMove2() { return move2; }
+    public Move getMove3() { return move3; }
+    public Move getMove4() { return move4; }
     public int getOwnedID() { return ownedID; }
+    public boolean haveBurn(){ return haveBurn; }
 
     /**
      * SETTER
      * */
     public void setHp(int val){ this.hp = val; }
     public void setEvasion(int val){ this.evasion = val; }
-    public void setMove1Id(int val){ this.move1Id = val; }
-    public void setMove2Id(int val){ this.move2Id = val; }
-    public void setMove3Id(int val){ this.move3Id = val; }
-    public void setMove4Id(int val){ this.move4Id = val; }
+    public void setMove1(Move val){ this.move1 = val; }
+    public void setMove2(Move val){ this.move2 = val; }
+    public void setMove3(Move val){ this.move3 = val; }
+    public void setMove4(Move val){ this.move4 = val; }
     public void setCurrentXp(int val){ this.currentXp = val; }
     public void setOwnedID(int val){ this.ownedID = val; }
+    public void setHaveBurn(boolean val){ this.haveBurn = val; }
+
+    /**
+     * Methods
+     * */
+
+    /**
+     * This method counts the size of the inflicted damage
+     * @param opponent Object of the pokemon which suffer the damage
+     * @param m Object of the move which being used by the attacker
+     * */
+    public void dealDamage(Pokemon opponent, Move m){
+
+        if(!m.getMoveCategory().equals("Status")){
+            double STAB = this.getType1().equals(m.getType()) || this.getType2().equals(m.getType()) ? 1.5 : 1.0;
+            double typeEffectiveness = Effectiveness.INSTANCE.get(m.getType(), opponent.getType1())*10;
+            double criticalStrikeChance = 1;
+            double others = 1;
+            Random r = new Random(); double rand = 0.85 + (1.0-0.85) * r.nextDouble();
+            double modifier = STAB * typeEffectiveness * criticalStrikeChance * others * rand;
+            double damage = 0;
+            if(m.getMoveCategory().equals("Physical"))
+                damage = Math.floor(Math.floor((Math.floor((Math.floor((Math.floor(((Math.floor((2*this.getLevel())/5)+2)*this.getAttack()*m.getBaseDamage())/opponent.getDefense()))/50)+2)*STAB))*typeEffectiveness)*rand);
+            else if(m.getMoveCategory().equals("Special"))
+                damage = Math.floor(Math.floor((Math.floor((Math.floor((Math.floor(((Math.floor((2*this.getLevel())/5)+2)*this.getSpAttack()*m.getBaseDamage())/opponent.getSpDefense()))/50)+2)*STAB))*typeEffectiveness)*rand);
+
+            opponent.setHp(opponent.getHp()-(int)damage);
+            System.out.println(this.getName() + " has dealt " + damage + " damage to " + opponent.getName() + " with " + m.getDisplayName());
+            System.out.println(opponent.getName() + " now has " + opponent.getHp() + " health");
+        }
+    }
+
+    /**
+     * BURN
+     * Burn is one of the seldom used status afflictions, despite the fact that it has serious reprecussions on the Pokémon on which it is afflicted.
+     *
+     * Effects:
+     *  - Each turn, the Pokémon afflicted with the Burn loses 1/8th of it's Max HP
+     *  - The Pokémon's Physical Attack Stat is cut by Half. This effect does not work on Pokémon with the Guts ability
+     *  - The Pokémon's Special Attack Stat is doubled on Pokémon with the Flare Boost ability
+     *
+     * Immunities:
+     *  - Fire Type Pokémon
+     *  - Pokémon with the Water Veil ability
+     *
+     * Methods of Healing
+     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
+     *  - Using the attacks Heal Bell or Aromatherapy
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void doBurn(){
+        if(this.haveBurn){
+            if(!(this.type1.equals("FIRE")) && !(this.type2.equals("FIRE"))){
+                this.hp = (int)Math.floor(this.hp - (this.maxHp * (0.875)));
+                if(!(this.hiddenAbility.equals("GUTS")) && (this.attack == this.maxAttack))
+                    this.attack = (int)Math.ceil(this.attack/2);
+            }
+            if(this.hiddenAbility.equals("FLAREBOOST") && (this.spAttack == this.maxSpecialAttack)){
+                this.spAttack = (int)Math.ceil(this.spAttack*2);
+            }
+        }
+    }
+    public void healBurn(){
+        this.haveBurn = false;
+    }
+
+
 
 }

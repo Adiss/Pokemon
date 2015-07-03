@@ -1,7 +1,14 @@
 package hu.experiment_team.models;
 
+import hu.experiment_team.dao.PokemonDaoJDBC;
+
+import java.io.InputStreamReader;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * This model contains the trainer.
@@ -34,23 +41,27 @@ public class Trainer {
      * */
     private Date register_date;
     /**
-     * List of actually carried pokemons
+     * List of owned pokémons.
+     * */
+    private List<Pokemon> ownedPokemons;
+    /**
+     * List of actually carried pokemons.
      * */
     private List<Pokemon> partyPokemons;
     /**
-     * Number of active ( healthy ) pokemons
+     * Number of active ( healthy ) pokemons.
      * */
     private int activePokemons;
     /**
-     * Amount of wins
+     * Amount of wins.
      * */
     private int matchWin;
     /**
-     * Amount of looses
+     * Amount of looses.
      * */
     private int matchLoose;
     /**
-     * Online status of the palyer
+     * Online status of the palyer.
      * */
     private int online;
 
@@ -86,6 +97,10 @@ public class Trainer {
          * */
         private Date register_date = null;
         /**
+         * List of owned pokémons
+         * */
+        private List<Pokemon> ownedPokemons;
+        /**
          * List of actually carried pokemons
          * */
         private List<Pokemon> partyPokemons = null;
@@ -120,6 +135,7 @@ public class Trainer {
             this.email = email;
         }
         public Builder register_date(Date val){ register_date = val; return this; }
+        public Builder ownedPokemons(List<Pokemon> val){ this.ownedPokemons = val; return this; }
         public Builder partyPokemons(List<Pokemon> val){ this.partyPokemons = val; return this; }
         public Builder activePokemons(int val){ this.activePokemons = val; return this; }
         public Builder matchWin(int val){ matchWin = val; return this; }
@@ -141,6 +157,7 @@ public class Trainer {
         this.password = builder.password;
         this.email = builder.email;
         this.register_date = builder.register_date;
+        this.ownedPokemons = builder.ownedPokemons;
         this.partyPokemons = builder.partyPokemons;
         this.activePokemons = builder.activePokemons;
         this.matchWin = builder.matchWin;
@@ -169,9 +186,17 @@ public class Trainer {
      * */
     public Date getRegisterDate(){ return register_date; }
     /**
+     * @return List of owned pokemons
+     * */
+    public List<Pokemon> getOwnedPokemons() { return ownedPokemons; }
+    /**
      * @return List of party pokemons
      * */
-    public List<Pokemon> getPartyPokemons() { return partyPokemons; }
+    public List<Pokemon> getPartyPokemons() {
+        return new ArrayList<Pokemon>(){{
+            addAll(partyPokemons.stream().filter(p -> p.getHp() > 0).collect(Collectors.toList()));
+        }};
+    }
     /**
      * @return Number of healthy pokemons
      * */
@@ -198,6 +223,10 @@ public class Trainer {
      * */
     public void setDisplayName(String displayName) { this.displayName = displayName; }
     /**
+     * @param ownedPokemons List of owned pokemons
+     * */
+    public void setOwnedPokemons(List<Pokemon> ownedPokemons) { this.ownedPokemons = ownedPokemons; }
+    /**
      * @param partyPokemons List of carried pokemons
      * */
     public void setPartyPokemons(List<Pokemon> partyPokemons) { this.partyPokemons = partyPokemons; }
@@ -217,5 +246,65 @@ public class Trainer {
      * @param online Set the trainer's online status
      * */
     public void setOnline(int online) { this.online = online; }
+
+    /**
+     * Methods
+     * */
+
+    /**
+     * Hozzáad a Trainerhez egy pokémont.
+     * */
+    public void addPokemon(Pokemon p){
+        PokemonDaoJDBC.INSTANCE.addOwnedPokemon(this.id, p.getId());
+    }
+    public void addPokemon(int pokemonId){
+        PokemonDaoJDBC.INSTANCE.addOwnedPokemon(this.id, pokemonId);
+    }
+
+    /**
+     * Ha meghívjuk, a trainer megkapja a birtokolt pokémonjai listáját, amiből kiválaszthat 6-ot amit megával akar vinni.
+     * */
+    public void choosePartyPokemons(){
+
+        Scanner sc = new Scanner(new InputStreamReader(System.in));
+
+        System.out.println("A te pokemonjaid:\n");
+        for(int i = 0; i < this.ownedPokemons.size(); i++){
+            System.out.println("ID: "+ (i+1) + " " + this.ownedPokemons.get(i));
+        }
+        System.out.println("\n");
+
+        List<Pokemon> partyPokemons = new ArrayList<>();
+        for(int i = 0; (i < 6) && (i < this.ownedPokemons.size()); i++){
+            System.out.println("Írd le a(z) " + (i+1) + ". választott pokémon ID-ját");
+            partyPokemons.add(this.ownedPokemons.get(Integer.parseInt(sc.nextLine())));
+        }
+
+        this.partyPokemons = partyPokemons;
+        this.activePokemons = partyPokemons.size();
+
+    }
+
+    /**
+     * Kiválaszt a trainernek 6 random pokémont a birtokolt pokémonok közzül, amit magával vihet.
+     * */
+    public void chooseRandomPartyPokemons(){
+
+        List<Pokemon> ownedPokemons = this.ownedPokemons;
+        List<Pokemon> partyPokemons = new ArrayList<>();
+        for(int i = 0; (i < 6) && (i < ownedPokemons.size()); i++){
+            Collections.shuffle(ownedPokemons);
+            partyPokemons.add(ownedPokemons.remove(0));
+        }
+
+        this.setPartyPokemons(partyPokemons);
+        this.setActivePokemons(partyPokemons.size());
+
+    }
+
+    public Pokemon chooseOneRandomPartyPokemon(){
+        Collections.shuffle(this.getPartyPokemons());
+        return this.getPartyPokemons().get(0);
+    }
 
 }

@@ -219,10 +219,10 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
                                 .ownerId(rs.getInt("ownerId"))
                                 .level(rs.getInt("level"))
                                 .currentXp(rs.getInt("currentXp"))
-                                .move1Id(rs.getInt("move1Id"))
-                                .move2Id(rs.getInt("move2Id"))
-                                .move3Id(rs.getInt("move3Id"))
-                                .move4Id(rs.getInt("move4Id"))
+                                .move1(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move1Id")))
+                                .move2(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move2Id")))
+                                .move3(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move3Id")))
+                                .move4(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move4Id")))
                                 .ownedID(rs.getInt("id"))
                                 .build());
             }
@@ -285,10 +285,10 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
                                 .ownerId(rs.getInt("ownerId"))
                                 .level(rs.getInt("level"))
                                 .currentXp(rs.getInt("currentXp"))
-                                .move1Id(rs.getInt("move1Id"))
-                                .move2Id(rs.getInt("move2Id"))
-                                .move3Id(rs.getInt("move3Id"))
-                                .move4Id(rs.getInt("move4Id"))
+                                .move1(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move1Id")))
+                                .move2(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move2Id")))
+                                .move3(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move3Id")))
+                                .move4(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move4Id")))
                                 .ownedID(rs.getInt("id"))
                                 .build();
             }
@@ -351,10 +351,10 @@ public enum PokemonDaoJDBC implements PokemonDaoInterface {
                         .ownerId(rs.getInt("ownerId"))
                         .level(rs.getInt("level"))
                         .currentXp(rs.getInt("currentXp"))
-                        .move1Id(rs.getInt("move1Id"))
-                        .move2Id(rs.getInt("move2Id"))
-                        .move3Id(rs.getInt("move3Id"))
-                        .move4Id(rs.getInt("move4Id"))
+                        .move1(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move1Id")))
+                        .move2(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move2Id")))
+                        .move3(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move3Id")))
+                        .move4(MoveDaoJDBC.INSTANCE.getMoveById(rs.getInt("move4Id")))
                         .ownedID(rs.getInt("id"))
                         .build();
         }

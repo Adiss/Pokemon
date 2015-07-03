@@ -5,6 +5,7 @@ package hu.experiment_team;
 
 import static org.junit.Assert.*;
 
+import hu.experiment_team.dao.MoveDaoJDBC;
 import hu.experiment_team.dao.PokemonDaoJDBC;
 import hu.experiment_team.models.Pokemon;
 import hu.experiment_team.models.Trainer;
@@ -88,19 +89,19 @@ public class AppTest {
                 .battlerAltitude(0)
                 .level(1)
                 .currentXp(10000)
-                .move1Id(1)
-                .move2Id(2)
-                .move3Id(3)
-                .move4Id(4)
+                .move1(MoveDaoJDBC.INSTANCE.getMoveById(1))
+                .move2(MoveDaoJDBC.INSTANCE.getMoveById(2))
+                .move3(MoveDaoJDBC.INSTANCE.getMoveById(3))
+                .move4(MoveDaoJDBC.INSTANCE.getMoveById(4))
                 .evasion(1)
                 .build();
 
         p.setEvasion(5);
         p.setHp(5000);
-        p.setMove1Id(10);
-        p.setMove2Id(9);
-        p.setMove3Id(8);
-        p.setMove4Id(7);
+        p.setMove1(MoveDaoJDBC.INSTANCE.getMoveById(10));
+        p.setMove2(MoveDaoJDBC.INSTANCE.getMoveById(9));
+        p.setMove3(MoveDaoJDBC.INSTANCE.getMoveById(8));
+        p.setMove4(MoveDaoJDBC.INSTANCE.getMoveById(7));
         p.setCurrentXp(10001);
 
         assertTrue(p.getName().equals("TesztPokemon"));
@@ -141,10 +142,10 @@ public class AppTest {
         assertTrue(p.getBattlerAltitude() == 0);
         assertTrue(p.getLevel() == 1);
         assertTrue(p.getEvasion() == 5);
-        assertTrue(p.getMove1Id() == 10);
-        assertTrue(p.getMove2Id() == 9);
-        assertTrue(p.getMove3Id() == 8);
-        assertTrue(p.getMove4Id() == 7);
+        assertTrue(p.getMove1().getId() == 10);
+        assertTrue(p.getMove2().getId() == 9);
+        assertTrue(p.getMove3().getId() == 8);
+        assertTrue(p.getMove4().getId() == 7);
         assertTrue(p.getStepsToHatch() == 6000);
 
     }
