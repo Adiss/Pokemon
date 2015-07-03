@@ -518,15 +518,19 @@ public class Pokemon {
         if(!m.getMoveCategory().equals("Status")){
             double STAB = this.getType1().equals(m.getType()) || this.getType2().equals(m.getType()) ? 1.5 : 1.0;
             double typeEffectiveness = Effectiveness.INSTANCE.get(m.getType(), opponent.getType1())*10;
-            double criticalStrikeChance = 1;
-            double others = 1;
             Random r = new Random(); double rand = 0.85 + (1.0-0.85) * r.nextDouble();
-            double modifier = STAB * typeEffectiveness * criticalStrikeChance * others * rand;
-            double damage = 0;
-            if(m.getMoveCategory().equals("Physical"))
-                damage = Math.floor(Math.floor((Math.floor((Math.floor((Math.floor(((Math.floor((2*this.getLevel())/5)+2)*this.getAttack()*m.getBaseDamage())/opponent.getDefense()))/50)+2)*STAB))*typeEffectiveness)*rand);
-            else if(m.getMoveCategory().equals("Special"))
-                damage = Math.floor(Math.floor((Math.floor((Math.floor((Math.floor(((Math.floor((2*this.getLevel())/5)+2)*this.getSpAttack()*m.getBaseDamage())/opponent.getSpDefense()))/50)+2)*STAB))*typeEffectiveness)*rand);
+
+            double userAttack;
+            double oppDefense;
+            if(m.getMoveCategory().equals("Physical")){
+                userAttack = (2 * this.level + 10) * this.attack * m.getBaseDamage();
+                oppDefense = 250 * (opponent.getDefense());
+            } else {
+                userAttack = (2 * this.level + 10) * this.spAttack * m.getBaseDamage();
+                oppDefense = 250 * (opponent.getSpDefense());
+            }
+            double modifiers = typeEffectiveness * STAB * rand;
+            int damage = (int)Math.floor(( userAttack / oppDefense + 2 ) * modifiers);
 
             opponent.setHp(opponent.getHp()-(int)damage);
             System.out.println(this.getName() + " has dealt " + damage + " damage to " + opponent.getName() + " with " + m.getDisplayName());
