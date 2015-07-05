@@ -1,6 +1,7 @@
 package hu.experiment_team.models;
 
 import hu.experiment_team.Effectiveness;
+import hu.experiment_team.SpellScripts;
 
 import java.util.Random;
 
@@ -248,10 +249,6 @@ public class Pokemon {
      * */
     private int ownedID;
     /**
-     * Ez a flag jelzi, hogy a pokémonon van-e Burn debuff
-     * */
-    private boolean haveBurn;
-    /**
      * Ez az érték mutatja a pokémon maximális HP-ját.
      * Erre az effektek miatt van szükség.
      * */
@@ -281,6 +278,22 @@ public class Pokemon {
      * Erre az effektek miatt van szükség.
      * */
     private int maxSpeed;
+    /**
+     * Ez a flag jelzi, hogy a pokémonon van-e valamilyen status effect
+     *
+     * Effectek:
+     *   - 0 = Healthy
+     *   - 1 = Burn
+     *   - 2 = Freeze
+     *   - 3 = Paralysis
+     *   - 4 = Poison
+     *   - 5 = Badly Poisoned
+     *   - 6 = Sleep
+     *   - 7 = Attract
+     *   - 8 = Confusion
+     *   - 9 = Curse
+    * */
+    private int statusEffect = 0;
 
     @Override
     public String toString() {
@@ -489,7 +502,6 @@ public class Pokemon {
     public Move getMove3() { return move3; }
     public Move getMove4() { return move4; }
     public int getOwnedID() { return ownedID; }
-    public boolean haveBurn(){ return haveBurn; }
 
     /**
      * SETTER
@@ -502,7 +514,6 @@ public class Pokemon {
     public void setMove4(Move val){ this.move4 = val; }
     public void setCurrentXp(int val){ this.currentXp = val; }
     public void setOwnedID(int val){ this.ownedID = val; }
-    public void setHaveBurn(boolean val){ this.haveBurn = val; }
 
     /**
      * Methods
@@ -516,6 +527,8 @@ public class Pokemon {
     public void dealDamage(Pokemon opponent, Move m){
 
         if(!m.getMoveCategory().equals("Status")){
+
+            // A sebzés mértékének kiszámítása.
             double STAB = this.getType1().equals(m.getType()) || this.getType2().equals(m.getType()) ? 1.5 : 1.0;
             double typeEffectiveness = Effectiveness.INSTANCE.get(m.getType(), opponent.getType1())*10;
             Random r = new Random(); double rand = 0.85 + (1.0-0.85) * r.nextDouble();
@@ -532,7 +545,44 @@ public class Pokemon {
             double modifiers = typeEffectiveness * STAB * rand;
             int damage = (int)Math.floor(( userAttack / oppDefense + 2 ) * modifiers);
 
+            // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
             opponent.setHp(opponent.getHp()-(int)damage);
+
+            // Státusz effectek felrakása.
+            // BURN:
+            if(SpellScripts.GET.BurnSpells().contains(m.getInternalName())) {
+                rand = r.nextInt(99) + 1;
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applyBurn();
+                }
+            }
+            // FREEZE:
+            if(SpellScripts.GET.FreezeSpells().contains(m.getInternalName())) {
+                rand = r.nextInt(99) + 1;
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applyFreeze();
+                }
+            }
+            // PARALYSIS:
+            if(SpellScripts.GET.ParalysisSpells().contains(m.getInternalName())) {
+                rand = r.nextInt(99) + 1;
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applyParalysis();
+                }
+            }
+            // POISON:
+            if(SpellScripts.GET.PoisonSpells().contains(m.getInternalName())) {
+                rand = r.nextInt(99) + 1;
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applyPoison();
+                }
+            }
+
+            // Státusz effektek végrehajtása
+            opponent.doBurn();
+            opponent.doPoison();
+
+            // Logoljuk a dolgokat. TODO -> Loggert beépíteni.
             System.out.println(this.getName() + " has dealt " + damage + " damage to " + opponent.getName() + " with " + m.getDisplayName());
             System.out.println(opponent.getName() + " now has " + opponent.getHp() + " health");
         }
@@ -557,8 +607,11 @@ public class Pokemon {
      *
      *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
      * */
+    public void applyBurn(){
+        this.statusEffect = 1;
+    }
     public void doBurn(){
-        if(this.haveBurn){
+        if(this.statusEffect == 1){
             if(!(this.type1.equals("FIRE")) && !(this.type2.equals("FIRE"))){
                 this.hp = (int)Math.floor(this.hp - (this.maxHp * (0.875)));
                 if(!(this.hiddenAbility.equals("GUTS")) && (this.attack == this.maxAttack))
@@ -570,9 +623,98 @@ public class Pokemon {
         }
     }
     public void healBurn(){
-        this.haveBurn = false;
+        this.statusEffect = 0;
+        this.spAttack = this.maxSpecialAttack;
+        this.attack = this.maxAttack;
     }
 
+    /**
+     * Freeze
+     * Freezing is another seldom used status affliction, mostly due to the limited ways of afflicting it.
+     * This status affliction completely immobolizes the Pokémon on which it has been afflicted until it is thawed, which can be done randomly with a 20% chance each turn
+     *
+     * Effects:
+     *  - The Pokémon cannot use any attacks (apart from those that thaw it)
+     *
+     * Immunities:
+     *  - Ice Type Pokémon
+     *  - Pokémon with the Magma Armor ability
+     *
+     * Methods of Healing
+     *  - Being hit by a Fire-Type Attack
+     *  - Using the attacks Flame Wheel, Flare Blitz, Sacred Fire, Scald, Steam Eruption
+     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
+     *  - Using the attacks Heal Bell or Aromatherapy
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void applyFreeze(){
+        if(!(this.getType1().equals("ICE")) && !(this.getType2().equals("ICE")) && !(this.getHiddenAbility().equals("MAGMAARMOR"))){
+            this.statusEffect = 2;
+        }
+    }
+    public void healFreeze(){
+        this.statusEffect = 0;
+    }
 
+    /**
+     * Paralysis
+     * Paralysis is one of the more commonly used status afflictions. It is able easily to immobolize your foe and give you the upper hand
+     *
+     * Effects:
+     *  - The Pokémon afflicted's Speed stat is reduced to 25% of it's Maximum. Pokémon with the Quick Feet ability are not affected
+     *  - The Pokémon has a 25% chance of being unable to attack each turn
+     * Immunities:
+     *  - Pokémon with the Limber ability
+     *  - Electric-type Pokémon
+     * Methods of Healing
+     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
+     *  - Using the attacks Heal Bell or Aromatherapy
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void applyParalysis(){
+        if(!(this.getHiddenAbility().equals("LIMBER")) && !(this.getType1().equals("ELECTRIC")) && !(this.getType2().equals("ELECTRIC"))){
+            this.statusEffect = 3;
+            if(this.speed == this.maxSpeed)
+                this.speed = (int)Math.ceil(this.speed * 0.25);
+        }
+    }
+    public void healParalysis(){
+        this.statusEffect = 0;
+        this.speed = this.maxSpeed;
+    }
+
+    /**
+     * Poison
+     * Poison is another commonly utilised status affliction. It gradually lowers the Pokémon's Hit Points until the Pokémon fains
+     *
+     * Effects:
+     *  - The Pokémon loses 1/8th Max HP each turn
+     *  - For every 4 steps the trainer takes, the Pokémon loses 1 HP until it reaches 1 HP remaining (Pre-Black & White)
+     *
+     * Immunities:
+     *  - Poison Type & Steel Type Pokémon
+     *  - Pokémon with the Immunity ability
+     *
+     * Methods of Healing
+     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
+     *  - Using the attacks Heal Bell or Aromatherapy
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void applyPoison(){
+        this.statusEffect = 4;
+    }
+    public void doPoison(){
+        if(this.statusEffect == 4){
+            if(!(this.type1.equals("POISON")) && !(this.type2.equals("POISON")) && !(this.type1.equals("STEEL")) && !(this.type2.equals("STEEL")) && !(this.hiddenAbility.equals("IMMUNITY"))){
+                this.hp = (int)Math.floor(this.hp - (this.maxHp * (0.875)));
+            }
+        }
+    }
+    public void healPoison(){
+        this.statusEffect = 0;
+    }
 
 }
