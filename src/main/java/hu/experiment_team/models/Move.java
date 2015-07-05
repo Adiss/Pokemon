@@ -61,7 +61,7 @@ public class Move {
      * For example, Poison Sting poisons the opponent 30% of the time, so this value would be 30.
      * Set to 0 if this move does nothing other than its effect (e.g. for all status moves).
      * */
-    private final int additionalEffort;
+    private final int additionalEffectChance;
     /**
      * The battler(s) that this move will strike. Is one of the following values:
      *  - 00 - Single Pokémon other than the user
@@ -124,7 +124,7 @@ public class Move {
         private String moveCategory;
         private int accuracy;
         private int totalPP;
-        private int additionalEffort;
+        private int additionalEffectChance;
 
         // Optional parameters
         private String internalName = "null";
@@ -136,14 +136,14 @@ public class Move {
         private String contestType = "null";
         private String description = "null";
 
-        public Builder(int id, int baseDamage, String type, String moveCategory, int accuracy, int totalPP, int additionalEffort){
+        public Builder(int id, int baseDamage, String type, String moveCategory, int accuracy, int totalPP, int additionalEffectChance){
             this.Id = id;
             this.baseDamage = baseDamage;
             this.type = type;
             this.moveCategory = moveCategory;
             this.accuracy = accuracy;
             this.totalPP = totalPP;
-            this.additionalEffort = additionalEffort;
+            this.additionalEffectChance = additionalEffectChance;
         }
 
         public Builder internalName(String val){ internalName = val; return this; }
@@ -168,7 +168,7 @@ public class Move {
         moveCategory = builder.moveCategory;
         accuracy = builder.accuracy;
         totalPP = builder.totalPP;
-        additionalEffort = builder.additionalEffort;
+        additionalEffectChance = builder.additionalEffectChance;
         target = builder.target;
         priority = builder.priority;
         flags = builder.flags;
@@ -185,7 +185,7 @@ public class Move {
     public String getMoveCategory() { return moveCategory; }
     public int getAccuracy() { return accuracy; }
     public int getTotalPP() { return totalPP; }
-    public int getAdditionalEffort() { return additionalEffort; }
+    public int getAdditionalEffectChance() { return additionalEffectChance; }
     public int getTarget() { return target; }
     public int getPriority() { return priority; }
     public String getFlags() { return flags; }
