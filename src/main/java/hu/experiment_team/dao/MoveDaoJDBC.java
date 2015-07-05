@@ -145,6 +145,46 @@ public enum MoveDaoJDBC implements MoveDaoInterface {
     }
 
     /**
+     * Lekérdezi az adatbázisból az összes spellt egy listába.
+     * */
+    @Override
+    public List<Move> pullMoves(){
+
+        try {
+            props.load(propFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        List<Move> moves = new ArrayList<>();
+        moves.add(new Move.Builder(0, 0, "null", "null", 0, 0, 0).displayName("PLACEHOLDER").build());
+        String selectStatement = "SELECT * FROM moves;";
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(props.getProperty("db.host"), props.getProperty("db.username"), props.getProperty("db.password"));
+            prepStmt = conn.prepareStatement(selectStatement);
+            rs = prepStmt.executeQuery();
+            if(rs.next()) {
+                moves.add(new Move.Builder(rs.getInt("id"), rs.getInt("baseDamage"), rs.getString("type"), rs.getString("moveCategory"), rs.getInt("accuracy"), rs.getInt("totalPP"), rs.getInt("additionalEffectChance"))
+                        .target(rs.getInt("target"))
+                        .priority(rs.getInt("priority"))
+                        .flags(rs.getString("flags"))
+                        .contestType(rs.getString("contestType"))
+                        .description(rs.getString("description"))
+                        .internalName(rs.getString("internalName"))
+                        .displayName(rs.getString("displayName"))
+                        .functionCode(rs.getString("functionCode"))
+                        .build());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+        return moves;
+    }
+
+    /**
      * Ez a függvény fogja lezárni az adatbázis kapcsolatokat.
      * */
     private void close() {

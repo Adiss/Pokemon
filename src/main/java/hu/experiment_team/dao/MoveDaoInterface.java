@@ -23,4 +23,6 @@ public interface MoveDaoInterface {
     List<Integer> getKnownMove(int level, int pokemonId);
 
     Move getRandomKnownMove(Pokemon p);
+
+    List<Move> pullMoves();
 }
