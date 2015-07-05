@@ -223,6 +223,7 @@ public class Pokemon {
      * */
     private int level;
     private int evasion;
+    private int maxEvasion;
     /**
      * A pokémon első képessége
      * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
@@ -294,6 +295,8 @@ public class Pokemon {
      *   - 9 = Curse
     * */
     private int statusEffect = 0;
+    private int sleepCounter = 0;
+    private int confusionCounter = 0;
 
     @Override
     public String toString() {
@@ -443,6 +446,7 @@ public class Pokemon {
         battlerAltitude = builder.battlerAltitude;
         level = builder.level;
         evasion = builder.evasion;
+        maxEvasion = builder.evasion;
         move1 = builder.move1;
         move2 = builder.move2;
         move3 = builder.move3;
@@ -502,6 +506,7 @@ public class Pokemon {
     public Move getMove3() { return move3; }
     public Move getMove4() { return move4; }
     public int getOwnedID() { return ownedID; }
+    public int getStatusEffect() { return statusEffect; }
 
     /**
      * SETTER
@@ -526,66 +531,150 @@ public class Pokemon {
      * */
     public void dealDamage(Pokemon opponent, Move m){
 
-        if(!m.getMoveCategory().equals("Status")){
+        // A sebzés mértékének kiszámítása.
+        double STAB = this.getType1().equals(m.getType()) || this.getType2().equals(m.getType()) ? 1.5 : 1.0;
+        double typeEffectiveness = Effectiveness.INSTANCE.get(m.getType(), opponent.getType1())*10;
+        Random r = new Random(); double rand = 0.85 + (1.0-0.85) * r.nextDouble();
 
-            // A sebzés mértékének kiszámítása.
-            double STAB = this.getType1().equals(m.getType()) || this.getType2().equals(m.getType()) ? 1.5 : 1.0;
-            double typeEffectiveness = Effectiveness.INSTANCE.get(m.getType(), opponent.getType1())*10;
-            Random r = new Random(); double rand = 0.85 + (1.0-0.85) * r.nextDouble();
+        double userAttack;
+        double oppDefense;
+        if(m.getMoveCategory().equals("Physical")){
+            userAttack = (2 * this.level + 10) * this.attack * m.getBaseDamage();
+            oppDefense = 250 * (opponent.getDefense());
+        } else {
+            userAttack = (2 * this.level + 10) * this.spAttack * m.getBaseDamage();
+            oppDefense = 250 * (opponent.getSpDefense());
+        }
+        double modifiers = typeEffectiveness * STAB * rand;
+        int damage = (int)Math.floor(( userAttack / oppDefense + 2 ) * modifiers);
 
-            double userAttack;
-            double oppDefense;
-            if(m.getMoveCategory().equals("Physical")){
-                userAttack = (2 * this.level + 10) * this.attack * m.getBaseDamage();
-                oppDefense = 250 * (opponent.getDefense());
-            } else {
-                userAttack = (2 * this.level + 10) * this.spAttack * m.getBaseDamage();
-                oppDefense = 250 * (opponent.getSpDefense());
-            }
-            double modifiers = typeEffectiveness * STAB * rand;
-            int damage = (int)Math.floor(( userAttack / oppDefense + 2 ) * modifiers);
+        if((this.getStatusEffect() != 2) && (this.getStatusEffect() != 3) && (this.getStatusEffect() != 6) && (this.getStatusEffect() != 7) && (this.getStatusEffect() != 8)){
 
             // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
             opponent.setHp(opponent.getHp()-(int)damage);
 
             // Státusz effectek felrakása.
+            rand = r.nextInt(99) + 1;
             // BURN:
             if(SpellScripts.GET.BurnSpells().contains(m.getInternalName())) {
-                rand = r.nextInt(99) + 1;
                 if ((int) rand <= m.getAdditionalEffectChance()) {
                     opponent.applyBurn();
                 }
             }
             // FREEZE:
             if(SpellScripts.GET.FreezeSpells().contains(m.getInternalName())) {
-                rand = r.nextInt(99) + 1;
                 if ((int) rand <= m.getAdditionalEffectChance()) {
                     opponent.applyFreeze();
                 }
             }
             // PARALYSIS:
             if(SpellScripts.GET.ParalysisSpells().contains(m.getInternalName())) {
-                rand = r.nextInt(99) + 1;
                 if ((int) rand <= m.getAdditionalEffectChance()) {
                     opponent.applyParalysis();
                 }
             }
             // POISON:
             if(SpellScripts.GET.PoisonSpells().contains(m.getInternalName())) {
-                rand = r.nextInt(99) + 1;
                 if ((int) rand <= m.getAdditionalEffectChance()) {
                     opponent.applyPoison();
                 }
             }
+            // BADLY POISON:
+            if(SpellScripts.GET.BadlyPoisonSpells().contains(m.getInternalName())) {
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applyBadlyPoison();
+                }
+            }
+            // SLEEP:
+            if(SpellScripts.GET.SleepSpells().contains(m.getInternalName())) {
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applySleep();
+                }
+            }
+            // ATTRACT:
+            if(SpellScripts.GET.AttractSpells().contains(m.getInternalName())) {
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applyAttract();
+                }
+            }
+            // CONFUSION:
+            if(SpellScripts.GET.ConfusionSpells().contains(m.getInternalName())) {
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applyConfusion();
+                }
+            }
+            // CURSE:
+            if(SpellScripts.GET.CurseSpells().contains(m.getInternalName())) {
+                if ((int) rand <= m.getAdditionalEffectChance()) {
+                    opponent.applyCurse();
+                }
+            }
 
             // Státusz effektek végrehajtása
-            opponent.doBurn();
-            opponent.doPoison();
+            switch(this.statusEffect){
+                case 0:
+                    break;
+                case 1:
+                    opponent.doBurn();
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    opponent.doPoison();
+                    break;
+                case 5:
+                    opponent.doBadlyPoison();
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    opponent.doConfusion();
+                    break;
+                case 9:
+                    opponent.doCurse();
+                    break;
+                default:
+                    break;
+            }
 
             // Logoljuk a dolgokat. TODO -> Loggert beépíteni.
             System.out.println(this.getName() + " has dealt " + damage + " damage to " + opponent.getName() + " with " + m.getDisplayName());
             System.out.println(opponent.getName() + " now has " + opponent.getHp() + " health");
+
+        } else {
+            rand = r.nextInt(99) + 1;
+            if(this.statusEffect == 3){
+                if(rand >= 25){
+                    // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
+                    opponent.setHp(opponent.getHp()-(int)damage);
+                }
+            }
+            if(this.statusEffect == 6){
+                if(this.sleepCounter == 0){
+                    // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
+                    opponent.setHp(opponent.getHp()-(int)damage);
+                }
+                this.sleepCounter -= 1;
+            }
+            if(this.statusEffect == 7){
+                if(rand <= 50){
+                    // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
+                    opponent.setHp(opponent.getHp()-(int)damage);
+                }
+            }
+            if(this.statusEffect == 8){
+                if(confusionCounter == 0){
+                    // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
+                    opponent.setHp(opponent.getHp()-(int)damage);
+                }
+                this.confusionCounter -= 1;
+            }
         }
+
     }
 
     /**
@@ -714,6 +803,158 @@ public class Pokemon {
         }
     }
     public void healPoison(){
+        this.statusEffect = 0;
+    }
+
+    /**
+     * Badly Poisoned
+     * Badly Poisoned acts like Poison in the same manner, however the effects it gives is cumulative. It only lasts in the battle it was afflicted in, in which it reverts to normal poison
+     *
+     * Effects:
+     *  - The Pokémon loses 1/16th Max HP for the first turn and then adds 1/16th to the amount to be lost so on 2nd turn 2/16th, 3rd 3/16th and so on until the Pokémon faints
+     *
+     * Immunities:
+     *  - See Poison
+     *
+     * Method of Healing:
+     *  - See Poison
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void applyBadlyPoison(){
+        this.statusEffect = 5;
+    }
+    private double badlyPoisonStack = 1;
+    public void doBadlyPoison(){
+        if(this.statusEffect == 5){
+            if(!(this.type1.equals("POISON")) && !(this.type2.equals("POISON")) && !(this.type1.equals("STEEL")) && !(this.type2.equals("STEEL")) && !(this.hiddenAbility.equals("IMMUNITY"))){
+                this.hp = (int)Math.floor(this.hp - ((this.maxHp * (0.9375))*badlyPoisonStack));
+                badlyPoisonStack +=1;
+            }
+        }
+    }
+    public void healBadlyPoison(){
+        this.statusEffect = 0;
+        badlyPoisonStack = 1;
+    }
+
+    /**
+     * Sleep
+     * Sleep is the primary used status affliction as it is utilised in conjunction with a healing move, however it is also good at stopping your opponent in it's tracks
+     *
+     * Effects:
+     *  - The Pokémon cannot attack for 1 to 7 turns, the turn count is lowered with the Early Bird ability
+     *  - Sleep Talk & Snore can be used
+     *  - Allows the attacks Dream Eater & Nightmare as well as the ability Bad Dreams to be used against you
+     * Immunities:
+     *  - Pokémon with the Insomnia & Vital Spirit abilities
+     *  - All Pokémon when Electric Terrain is in effect
+     *  - Partner Pokémon if a Pokémon has Sweet Veil
+     *
+     * Methods of Healing
+     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
+     *  - Using the attacks Heal Bell or Aromatherapy
+     *  - Using the attack Wake-Up Slap
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void applySleep(){
+        if(!(this.hiddenAbility.equals("INSOMNIA")) && !(this.hiddenAbility.equals("VITALSPIRIT"))){
+            Random r = new Random();
+            this.statusEffect = 6;
+            this.sleepCounter = r.nextInt(6)+1;
+        }
+    }
+    public void healSleep(){
+        this.statusEffect = 0;
+    }
+
+    /**
+     * Attract
+     * Attraction is a status affliction that only occurs a few times. It requires the user to have a gender and the opponent to have a differing gender to work
+     *
+     * Effects:
+     *  - The Pokémon afflicted cannot attack 50% of the time
+     * Immunities:
+     *  - Pokémon with the Oblivious ability
+     *  - Pokémon of the same gender as the user
+     *  - Genderless Pokémon
+     * Methods of Healing
+     *  - Using the attacks Heal Bell or Aromatherapy
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void applyAttract(){
+        if(!(this.hiddenAbility.equals("OBLIVIOUS"))){
+            this.statusEffect = 7;
+        }
+    }
+    public void healAttract(){
+        this.statusEffect = 0;
+    }
+
+    /**
+     * Confusion
+     * Confusion is another status effect that is common in use to hinder your opponent for 1 to 4 turns
+     *
+     * Effects:
+     *  - The Pokémon afflicted cannot attack 50% of the time for 1-4 turns
+     *  - Raises Evasion for Pokémon with the Tangled Feet ability
+     *
+     * Immunities:
+     *  - Pokémon with the Own Tempo ability
+     *
+     * Methods of Healing
+     *  - Using the attacks Heal Bell or Aromatherapy
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void applyConfusion(){
+        if(!(this.hiddenAbility.equals("OBLIVIOUS"))){
+            Random r = new Random();
+            this.statusEffect = 8;
+            this.confusionCounter = r.nextInt(3)+1;
+        }
+    }
+    public void doConfusion(){
+        if(this.statusEffect == 8){
+            this.hp = (int)Math.floor(this.hp - ((this.maxHp * 0.05)));
+            if(this.hiddenAbility.equals("TANGLEDFEET")){
+                if(this.evasion == this.maxEvasion){
+                    this.evasion *= 1.2;
+                }
+            }
+        }
+    }
+    public void healConfusion(){
+        this.statusEffect = 0;
+        this.evasion = maxEvasion;
+    }
+
+    /**
+     * Curse
+     * Curse is a seldom used affliction. Partly because the affliction only occurs when the attack has been used by a Ghost Type Pokémon
+     *
+     * Effects:
+     *  - The Pokémon afflicted loses 1/4 of it's Max HP each turn
+     *
+     * Immunities:
+     *  - None
+     *
+     * Methods of Healing
+     *  - Switching Out
+     *
+     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * */
+    public void applyCurse(){
+        this.statusEffect = 9;
+    }
+    public void doCurse(){
+        if(this.statusEffect == 9){
+            this.hp = (int)Math.floor(this.hp - ((this.maxHp * 0.25)));
+        }
+    }
+    public void healCurse(){
         this.statusEffect = 0;
     }
 
