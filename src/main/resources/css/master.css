@@ -1,0 +1,45 @@
+.upperScreen {
+    -fx-background-image: url("../images/battle_background.png");
+    -fx-background-size: 400, 238;
+}
+
+.actionButton {
+    -fx-pref-width: 68px;
+    -fx-pref-height: 30px;
+
+    -fx-background-color:   #000000,
+    linear-gradient(#7ebcea, #2f4b8f),
+    linear-gradient(#426ab7, #263e75),
+    linear-gradient(#395cab, #223768);
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+
+}
+
+.moveButton {
+    -fx-pref-width: 132px;
+    -fx-pref-height: 30px;
+
+    -fx-background-color:   #000000,
+    linear-gradient(#7ebcea, #2f4b8f),
+    linear-gradient(#426ab7, #263e75),
+    linear-gradient(#395cab, #223768);
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 12 30 12 30;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+
+}
+
+.menuTopImage {
+    -fx-background-image: url("../images/pokeproject_menu_top.png");
+    -fx-pref-width: 136px;
+    -fx-pref-height: 22px
+}
+
+.lowerScreen {
+    -fx-background-color: #000;
+}

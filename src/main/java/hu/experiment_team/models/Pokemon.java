@@ -538,13 +538,14 @@ public class Pokemon {
         double modifiers = typeEffectiveness * STAB * rand;
         int damage = (int)Math.floor(( userAttack / oppDefense + 2 ) * modifiers);
 
+        rand = r.nextInt(99) + 1;
+
         if((this.getStatusEffect() != 2) && (this.getStatusEffect() != 3) && (this.getStatusEffect() != 6) && (this.getStatusEffect() != 7) && (this.getStatusEffect() != 8)){
 
             // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
             opponent.setHp(opponent.getHp()-(int)damage);
 
             // Státusz effectek felrakása.
-            rand = r.nextInt(99) + 1;
             // BURN:
             if(SpellScripts.GET.BurnSpells().contains(m.getInternalName())) {
                 if ((int) rand <= m.getAdditionalEffectChance()) {
@@ -601,25 +602,15 @@ public class Pokemon {
             }
 
             // Státusz effektek végrehajtása
-            switch(this.statusEffect){
-                case 0:
-                    break;
+            switch(opponent.statusEffect){
                 case 1:
                     opponent.doBurn();
-                    break;
-                case 2:
-                    break;
-                case 3:
                     break;
                 case 4:
                     opponent.doPoison();
                     break;
                 case 5:
                     opponent.doBadlyPoison();
-                    break;
-                case 6:
-                    break;
-                case 7:
                     break;
                 case 8:
                     opponent.doConfusion();
@@ -636,39 +627,38 @@ public class Pokemon {
             System.out.println(opponent.getName() + " now has " + opponent.getHp() + " health");
 
         } else {
-            rand = r.nextInt(99) + 1;
-            if(this.statusEffect == 3){
-                if(rand >= 25){
-                    // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
-                    opponent.setHp(opponent.getHp()-(int)damage);
-                }
-            }
-            if(this.statusEffect == 6){
-                if(this.sleepCounter == 0){
-                    // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
-                    opponent.setHp(opponent.getHp()-(int)damage);
-                }
-                this.sleepCounter -= 1;
-            }
-            if(this.statusEffect == 7){
-                if(rand <= 50){
-                    // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
-                    opponent.setHp(opponent.getHp()-(int)damage);
-                }
-            }
-            if(this.statusEffect == 8){
-                if(confusionCounter == 0){
-                    // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
-                    opponent.setHp(opponent.getHp()-(int)damage);
-                }
-                this.confusionCounter -= 1;
+            switch(this.statusEffect){
+                case 3:
+                    if(rand >= 25)
+                        opponent.setHp(opponent.getHp()-(int)damage);
+                    break;
+                case 6:
+                    if(this.sleepCounter == 0)
+                        opponent.setHp(opponent.getHp()-(int)damage);
+                    this.sleepCounter -= 1;
+                    break;
+                case 7:
+                    if(rand <= 50)
+                        opponent.setHp(opponent.getHp()-(int)damage);
+                    break;
+                case 8:
+                    if(confusionCounter == 0)
+                        opponent.setHp(opponent.getHp()-(int)damage);
+                    else {
+                        if(rand <= 50)
+                            this.doConfusion();
+                    }
+                    this.confusionCounter -= 1;
+                    break;
+                default:
+                    break;
             }
         }
 
     }
 
     /**
-     * BURN.
+     * BURN.<br>
      * Burn is one of the seldom used status afflictions, despite the fact that it has serious reprecussions on the Pokémon on which it is afflicted.
      * <ul>
      *     <li>Effects:</li>
@@ -722,7 +712,7 @@ public class Pokemon {
     }
 
     /**
-     * Freeze.
+     * Freeze.<br>
      * Freezing is another seldom used status affliction, mostly due to the limited ways of afflicting it.
      * This status affliction completely immobolizes the Pokémon on which it has been afflicted until it is thawed, which can be done randomly with a 20% chance each turn
      * <ul>
@@ -765,7 +755,7 @@ public class Pokemon {
     }
 
     /**
-     * Paralysis.
+     * Paralysis.<br>
      * Paralysis is one of the more commonly used status afflictions. It is able easily to immobolize your foe and give you the upper hand.
      * <ul>
      *     <li>Effects:</li>
@@ -809,7 +799,7 @@ public class Pokemon {
     }
 
     /**
-     * Poison
+     * Poison<br>
      * Poison is another commonly utilised status affliction. It gradually lowers the Pokémon's Hit Points until the Pokémon fains
      * <ul>
      *     <li>Effects:</li>
@@ -855,7 +845,7 @@ public class Pokemon {
     }
 
     /**
-     * Badly Poisoned
+     * Badly Poisoned<br>
      * Badly Poisoned acts like Poison in the same manner, however the effects it gives is cumulative. It only lasts in the battle it was afflicted in, in which it reverts to normal poison
      * <ul>
      *     <li>Effects:</li>
@@ -901,7 +891,7 @@ public class Pokemon {
     }
 
     /**
-     * Sleep
+     * Sleep<br>
      * Sleep is the primary used status affliction as it is utilised in conjunction with a healing move, however it is also good at stopping your opponent in it's tracks
      * <ul>
      *     <li>Effects:</li>
@@ -947,7 +937,7 @@ public class Pokemon {
     }
 
     /**
-     * Attract
+     * Attract<br>
      * Attraction is a status affliction that only occurs a few times. It requires the user to have a gender and the opponent to have a differing gender to work
      * <ul>
      *     <li>Effects:</li>
@@ -987,7 +977,7 @@ public class Pokemon {
     }
 
     /**
-     * Confusion
+     * Confusion<br>
      * Confusion is another status effect that is common in use to hinder your opponent for 1 to 4 turns
      * <ul>
      *     <li>Effects:</li>
@@ -1039,7 +1029,7 @@ public class Pokemon {
     }
 
     /**
-     * Curse
+     * Curse<br>
      * Curse is a seldom used affliction. Partly because the affliction only occurs when the attack has been used by a Ghost Type Pokémon
      * <ul>
      *     <li>Effects:</li>
