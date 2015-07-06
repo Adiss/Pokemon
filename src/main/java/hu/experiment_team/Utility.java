@@ -44,4 +44,14 @@ public enum Utility {
         return byteArrayToHex(sha1hash);
     }
 
+    public String getImageName(int pokemonId){
+        if(pokemonId < 10){
+            return "00"+pokemonId;
+        } else if(pokemonId < 100){
+            return "0"+pokemonId;
+        } else {
+            return String.valueOf(pokemonId);
+        }
+    }
+
 }

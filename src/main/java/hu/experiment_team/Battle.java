@@ -22,7 +22,7 @@ public enum Battle {
         System.out.println(t2.getDisplayName() + " wants to battle!\n\n");
         t1.choosePartyPokemons();
 
-        while(t1.getPartyPokemons().size() != 0 && t1.getPartyPokemons().size() != 0){
+        while(t1.getPartyPokemons().size() != 0 && t2.getPartyPokemons().size() != 0){
 
             Pokemon t2Choosen = t2.chooseOneRandomPartyPokemon();
             System.out.println('\n' + t2.getDisplayName() + " has choosen " + t2Choosen.getName() + '\n' + '\n');
