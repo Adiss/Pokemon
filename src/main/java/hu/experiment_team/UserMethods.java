@@ -20,6 +20,7 @@ public enum UserMethods {
     /**
      * This method registers the user.
      * @param rUsername Entered username of the user
+     * @param displayName Entered display name of the user
      * @param rPassword First entered password of the user
      * @param rPassword2 Second entered password of the user
      * @param rEmail Entered email of the user

@@ -118,40 +118,64 @@ public enum SpellScripts {
     }};
 
     /**
-     * GETTER
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Burn debuffot.
      * */
     public List<String> BurnSpells() {
         return burnSpells;
     }
 
+    /**
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Freeze debuffot.
+     * */
     public List<String> FreezeSpells() {
         return freezeSpells;
     }
 
+    /**
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Paralysis debuffot.
+     * */
     public List<String> ParalysisSpells() {
         return paralysisSpells;
     }
 
+    /**
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Poision debuffot.
+     * */
     public List<String> PoisonSpells() {
         return poisonSpells;
     }
 
+    /**
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Badly Poision debuffot.
+     * */
     public List<String> BadlyPoisonSpells() {
         return badlyPoisonSpells;
     }
 
+    /**
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Sleep debuffot.
+     * */
     public List<String> SleepSpells() {
         return sleepSpells;
     }
 
+    /**
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Attract debuffot.
+     * */
     public List<String> AttractSpells() {
         return attractSpells;
     }
 
+    /**
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Confusion debuffot.
+     * */
     public List<String> ConfusionSpells() {
         return confusionSpells;
     }
 
+    /**
+     * @return Azon képességek listája, amelyek képesek felhelyezni a Curse debuffot.
+     * */
     public List<String> CurseSpells() {
         return curseSpells;
     }

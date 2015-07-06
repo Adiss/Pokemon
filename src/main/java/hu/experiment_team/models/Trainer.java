@@ -253,6 +253,7 @@ public class Trainer {
 
     /**
      * Hozzáad a Trainerhez egy pokémont.
+     * @param p A pokémon objektuma
      * */
     public void addPokemon(Pokemon p){
         PokemonDaoJDBC.INSTANCE.addOwnedPokemon(this.id, p.getId());

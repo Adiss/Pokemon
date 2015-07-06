@@ -12,6 +12,7 @@ public interface PokemonDaoInterface {
     /**
      * A megadott pokémon ID alapján lekérdez az adatbázisból egy alap pokémont.
      * @param pokemonId a pokémon adatbázis beli ID-je
+     * @return A pokémon objektumát adja vissza
      * */
     Pokemon getBasePokemonById(int pokemonId);
     /**
@@ -23,6 +24,7 @@ public interface PokemonDaoInterface {
     /**
      * A megadott trainer ID alapján lekérdezi az adott trainer összes birtolokt pokémonját.
      * @param trainerId A trainer adatbázis beli ID-je
+     * @return A birtokolt pokémonok objektumainak listáját adja vissza
      * */
     List<Pokemon> getOwnedPokemons(int trainerId);
     /**
@@ -32,8 +34,14 @@ public interface PokemonDaoInterface {
     Pokemon resetPokemon(int ownedID);
     /**
      * Kiválaszt egy random alap pokémont az adatbázisból.
+     * @return Egy pokémon objektuma
      * */
     Pokemon getRandomPokemon();
 
+    /**
+     * Egy birtokolt pokémont választ ki az adatbázisból ID alapján
+     * @param pokemonId A pokémon ID-je (ownedID)
+     * @return A pokémon objektuma
+     * */
     Pokemon getOwnedPokemonById(int pokemonId);
 }

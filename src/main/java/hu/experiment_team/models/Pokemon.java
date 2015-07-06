@@ -460,9 +460,6 @@ public class Pokemon {
         maxSpeed = builder.speed;
     }
 
-    /**
-     * GETTER
-     * */
     public int getOwnerId() { return ownerId; }
     public int getId() { return Id; }
     public String getName() { return name; }
@@ -508,9 +505,6 @@ public class Pokemon {
     public int getOwnedID() { return ownedID; }
     public int getStatusEffect() { return statusEffect; }
 
-    /**
-     * SETTER
-     * */
     public void setHp(int val){ this.hp = val; }
     public void setEvasion(int val){ this.evasion = val; }
     public void setMove1(Move val){ this.move1 = val; }
@@ -519,10 +513,6 @@ public class Pokemon {
     public void setMove4(Move val){ this.move4 = val; }
     public void setCurrentXp(int val){ this.currentXp = val; }
     public void setOwnedID(int val){ this.ownedID = val; }
-
-    /**
-     * Methods
-     * */
 
     /**
      * This method counts the size of the inflicted damage
@@ -678,23 +668,37 @@ public class Pokemon {
     }
 
     /**
-     * BURN
+     * BURN.
      * Burn is one of the seldom used status afflictions, despite the fact that it has serious reprecussions on the Pokémon on which it is afflicted.
-     *
-     * Effects:
-     *  - Each turn, the Pokémon afflicted with the Burn loses 1/8th of it's Max HP
-     *  - The Pokémon's Physical Attack Stat is cut by Half. This effect does not work on Pokémon with the Guts ability
-     *  - The Pokémon's Special Attack Stat is doubled on Pokémon with the Flare Boost ability
-     *
-     * Immunities:
-     *  - Fire Type Pokémon
-     *  - Pokémon with the Water Veil ability
-     *
-     * Methods of Healing
-     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
-     *  - Using the attacks Heal Bell or Aromatherapy
-     *
-     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Each turn, the Pokémon afflicted with the Burn loses 1/8th of it's Max HP</li>
+     *              <li>The Pokémon's Physical Attack Stat is cut by Half. This effect does not work on Pokémon with the Guts ability</li>
+     *              <li>The Pokémon's Special Attack Stat is doubled on Pokémon with the Flare Boost ability</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Fire Type Pokémon</li>
+     *              <li>Pokémon with the Water Veil ability</li>
+     *          </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability</li>
+     *              <li>Using the attacks Heal Bell or Aromatherapy</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applyBurn(){
         this.statusEffect = 1;
@@ -718,24 +722,38 @@ public class Pokemon {
     }
 
     /**
-     * Freeze
+     * Freeze.
      * Freezing is another seldom used status affliction, mostly due to the limited ways of afflicting it.
      * This status affliction completely immobolizes the Pokémon on which it has been afflicted until it is thawed, which can be done randomly with a 20% chance each turn
-     *
-     * Effects:
-     *  - The Pokémon cannot use any attacks (apart from those that thaw it)
-     *
-     * Immunities:
-     *  - Ice Type Pokémon
-     *  - Pokémon with the Magma Armor ability
-     *
-     * Methods of Healing
-     *  - Being hit by a Fire-Type Attack
-     *  - Using the attacks Flame Wheel, Flare Blitz, Sacred Fire, Scald, Steam Eruption
-     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
-     *  - Using the attacks Heal Bell or Aromatherapy
-     *
-     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>The Pokémon cannot use any attacks (apart from those that thaw it)</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Ice Type Pokémon</li>
+     *              <li>Pokémon with the Magma Armor ability</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Being hit by a Fire-Type Attack</li>
+     *              <li>Using the attacks Flame Wheel, Flare Blitz, Sacred Fire, Scald, Steam Eruption</li>
+     *              <li>Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability</li>
+     *              <li>Using the attacks Heal Bell or Aromatherapy</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applyFreeze(){
         if(!(this.getType1().equals("ICE")) && !(this.getType2().equals("ICE")) && !(this.getHiddenAbility().equals("MAGMAARMOR"))){
@@ -747,19 +765,35 @@ public class Pokemon {
     }
 
     /**
-     * Paralysis
-     * Paralysis is one of the more commonly used status afflictions. It is able easily to immobolize your foe and give you the upper hand
-     *
-     * Effects:
-     *  - The Pokémon afflicted's Speed stat is reduced to 25% of it's Maximum. Pokémon with the Quick Feet ability are not affected
-     *  - The Pokémon has a 25% chance of being unable to attack each turn
-     * Immunities:
-     *  - Pokémon with the Limber ability
-     *  - Electric-type Pokémon
-     * Methods of Healing
-     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
-     *  - Using the attacks Heal Bell or Aromatherapy
-     *
+     * Paralysis.
+     * Paralysis is one of the more commonly used status afflictions. It is able easily to immobolize your foe and give you the upper hand.
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>The Pokémon afflicted's Speed stat is reduced to 25% of it's Maximum. Pokémon with the Quick Feet ability are not affected</li>
+     *              <li>The Pokémon has a 25% chance of being unable to attack each turn</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Pokémon with the Limber ability</li>
+     *              <li>Electric-type Pokémon</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability</li>
+     *              <li>Using the attacks Heal Bell or Aromatherapy</li>
+     *         </ul>
+     *     </li>
+     * </ul>
      *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
      * */
     public void applyParalysis(){
@@ -777,20 +811,34 @@ public class Pokemon {
     /**
      * Poison
      * Poison is another commonly utilised status affliction. It gradually lowers the Pokémon's Hit Points until the Pokémon fains
-     *
-     * Effects:
-     *  - The Pokémon loses 1/8th Max HP each turn
-     *  - For every 4 steps the trainer takes, the Pokémon loses 1 HP until it reaches 1 HP remaining (Pre-Black & White)
-     *
-     * Immunities:
-     *  - Poison Type & Steel Type Pokémon
-     *  - Pokémon with the Immunity ability
-     *
-     * Methods of Healing
-     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
-     *  - Using the attacks Heal Bell or Aromatherapy
-     *
-     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>The Pokémon loses 1/8th Max HP each turn</li>
+     *              <li>For every 4 steps the trainer takes, the Pokémon loses 1 HP until it reaches 1 HP remaining</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Poison Type &amp; Steel Type Pokémon</li>
+     *              <li>Pokémon with the Immunity ability</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability</li>
+     *              <li>Using the attacks Heal Bell or Aromatherapy</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applyPoison(){
         this.statusEffect = 4;
@@ -809,17 +857,31 @@ public class Pokemon {
     /**
      * Badly Poisoned
      * Badly Poisoned acts like Poison in the same manner, however the effects it gives is cumulative. It only lasts in the battle it was afflicted in, in which it reverts to normal poison
-     *
-     * Effects:
-     *  - The Pokémon loses 1/16th Max HP for the first turn and then adds 1/16th to the amount to be lost so on 2nd turn 2/16th, 3rd 3/16th and so on until the Pokémon faints
-     *
-     * Immunities:
-     *  - See Poison
-     *
-     * Method of Healing:
-     *  - See Poison
-     *
-     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>The Pokémon loses 1/16th Max HP for the first turn and then adds 1/16th to the amount to be lost so on 2nd turn 2/16th, 3rd 3/16th and so on until the Pokémon faints</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>See Poison</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>See Poison</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applyBadlyPoison(){
         this.statusEffect = 5;
@@ -841,22 +903,37 @@ public class Pokemon {
     /**
      * Sleep
      * Sleep is the primary used status affliction as it is utilised in conjunction with a healing move, however it is also good at stopping your opponent in it's tracks
-     *
-     * Effects:
-     *  - The Pokémon cannot attack for 1 to 7 turns, the turn count is lowered with the Early Bird ability
-     *  - Sleep Talk & Snore can be used
-     *  - Allows the attacks Dream Eater & Nightmare as well as the ability Bad Dreams to be used against you
-     * Immunities:
-     *  - Pokémon with the Insomnia & Vital Spirit abilities
-     *  - All Pokémon when Electric Terrain is in effect
-     *  - Partner Pokémon if a Pokémon has Sweet Veil
-     *
-     * Methods of Healing
-     *  - Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability
-     *  - Using the attacks Heal Bell or Aromatherapy
-     *  - Using the attack Wake-Up Slap
-     *
-     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>The Pokémon cannot attack for 1 to 7 turns, the turn count is lowered with the Early Bird ability</li>
+     *              <li>Sleep Talk &amp; Snore can be used</li>
+     *              <li>Allows the attacks Dream Eater &amp; Nightmare as well as the ability Bad Dreams to be used against you</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Pokémon with the Insomnia &amp; Vital Spirit abilities</li>
+     *              <li>All Pokémon when Electric Terrain is in effect</li>
+     *              <li>Partner Pokémon if a Pokémon has Sweet Veil</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Being a Pokémon with the Natural Cure ability and switching out, Hydration while its raining or having the Shed Skin ability</li>
+     *              <li>Using the attacks Heal Bell or Aromatherapy</li>
+     *              <li>Using the attack Wake-Up Slap</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applySleep(){
         if(!(this.hiddenAbility.equals("INSOMNIA")) && !(this.hiddenAbility.equals("VITALSPIRIT"))){
@@ -872,17 +949,33 @@ public class Pokemon {
     /**
      * Attract
      * Attraction is a status affliction that only occurs a few times. It requires the user to have a gender and the opponent to have a differing gender to work
-     *
-     * Effects:
-     *  - The Pokémon afflicted cannot attack 50% of the time
-     * Immunities:
-     *  - Pokémon with the Oblivious ability
-     *  - Pokémon of the same gender as the user
-     *  - Genderless Pokémon
-     * Methods of Healing
-     *  - Using the attacks Heal Bell or Aromatherapy
-     *
-     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>The Pokémon afflicted cannot attack 50% of the time</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Pokémon with the Oblivious ability</li>
+     *              <li>Pokémon of the same gender as the user</li>
+     *              <li>Genderless Pokémon</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Using the attacks Heal Bell or Aromatherapy</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applyAttract(){
         if(!(this.hiddenAbility.equals("OBLIVIOUS"))){
@@ -896,18 +989,32 @@ public class Pokemon {
     /**
      * Confusion
      * Confusion is another status effect that is common in use to hinder your opponent for 1 to 4 turns
-     *
-     * Effects:
-     *  - The Pokémon afflicted cannot attack 50% of the time for 1-4 turns
-     *  - Raises Evasion for Pokémon with the Tangled Feet ability
-     *
-     * Immunities:
-     *  - Pokémon with the Own Tempo ability
-     *
-     * Methods of Healing
-     *  - Using the attacks Heal Bell or Aromatherapy
-     *
-     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>The Pokémon afflicted cannot attack 50% of the time for 1-4 turns</li>
+     *              <li>Raises Evasion for Pokémon with the Tangled Feet ability</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Pokémon with the Own Tempo ability</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Using the attacks Heal Bell or Aromatherapy</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applyConfusion(){
         if(!(this.hiddenAbility.equals("OBLIVIOUS"))){
@@ -934,17 +1041,31 @@ public class Pokemon {
     /**
      * Curse
      * Curse is a seldom used affliction. Partly because the affliction only occurs when the attack has been used by a Ghost Type Pokémon
-     *
-     * Effects:
-     *  - The Pokémon afflicted loses 1/4 of it's Max HP each turn
-     *
-     * Immunities:
-     *  - None
-     *
-     * Methods of Healing
-     *  - Switching Out
-     *
-     *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
+     * <ul>
+     *     <li>Effects:</li>
+     *     <li>
+     *         <ul>
+     *              <li>The Pokémon afflicted loses 1/4 of it's Max HP each turn</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Immunities:</li>
+     *     <li>
+     *         <ul>
+     *              <li>None</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     * <ul>
+     *     <li>Methods of Healing:</li>
+     *     <li>
+     *         <ul>
+     *              <li>Switching Out</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applyCurse(){
         this.statusEffect = 9;

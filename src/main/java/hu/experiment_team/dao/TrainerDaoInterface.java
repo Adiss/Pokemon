@@ -15,17 +15,20 @@ public interface TrainerDaoInterface {
     /**
      * Kiválaszt egy trainert (felhasználót) a neve alapján.
      * @param username A trainer felhasználó neve.
+     * @return A trainer objektumát adja vissza
      * */
     Trainer selectByName(String username);
     /**
      * Kiválaszt egy trainert (felhasználót) a jelszava alapján.
      * Ennek a jelszónak már az SHA1 kódolt jelszónak kell lennie.
      * @param password SHA1 kódolt jelszó.
+     * @return A trainer objektumát adja vissza
      * */
     Trainer selectByPassword(String password);
     /**
      * Kiválaszt egy trainert (felhasználót) az e-mail címe alapján.
      * @param email A trainer email címe.
+     * @return A trainer objektumát adja vissza
      * */
     Trainer selectByEmail(String email);
 }

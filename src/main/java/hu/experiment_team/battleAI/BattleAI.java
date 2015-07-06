@@ -67,6 +67,7 @@ public enum BattleAI {
      * @param att Object of the pokemon which deal the damage
      * @param def Object of the pokemon which suffer the damage
      * @param m Object of the move which being used by the attacker
+     * @return A vizsgált pokémon sebzés utáni életpontja
      * */
     public int damageCalculator(Pokemon att, Pokemon def, Move m){
 
