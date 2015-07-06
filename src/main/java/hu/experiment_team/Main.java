@@ -115,6 +115,8 @@ public class Main extends Application {
         if(t1Choosen.getMove1() != null){
             btnMove1.setOnAction(e -> {
                 t1Choosen.dealDamage(t2Choosen, t1Choosen.getMove1());
+                Move t2ChoosenMove = BattleAI.INSTANCE.calculateNextMove(t2Choosen, t1Choosen);
+                t2Choosen.dealDamage(t1Choosen, t2ChoosenMove);
                 if(t1Choosen.getHp() <= 0){
                     myPokemon.setOpacity(0.1);
                     System.out.println("Your pokemon has been fainted!" + '\n' + '\n');
@@ -129,6 +131,8 @@ public class Main extends Application {
         if(t1Choosen.getMove2() != null){
             btnMove2.setOnAction(e -> {
                 t1Choosen.dealDamage(t2Choosen, t1Choosen.getMove2());
+                Move t2ChoosenMove = BattleAI.INSTANCE.calculateNextMove(t2Choosen, t1Choosen);
+                t2Choosen.dealDamage(t1Choosen, t2ChoosenMove);
                 if(t1Choosen.getHp() <= 0){
                     myPokemon.setOpacity(0.1);
                     System.out.println("Your pokemon has been fainted!" + '\n' + '\n');
@@ -143,6 +147,8 @@ public class Main extends Application {
         if(t1Choosen.getMove3() != null){
             btnMove3.setOnAction(e -> {
                 t1Choosen.dealDamage(t2Choosen, t1Choosen.getMove3());
+                Move t2ChoosenMove = BattleAI.INSTANCE.calculateNextMove(t2Choosen, t1Choosen);
+                t2Choosen.dealDamage(t1Choosen, t2ChoosenMove);
                 if(t1Choosen.getHp() <= 0){
                     myPokemon.setOpacity(0.1);
                     System.out.println("Your pokemon has been fainted!" + '\n' + '\n');
@@ -157,6 +163,8 @@ public class Main extends Application {
         if(t1Choosen.getMove4() != null){
             btnMove4.setOnAction(e -> {
                 t1Choosen.dealDamage(t2Choosen, t1Choosen.getMove4());
+                Move t2ChoosenMove = BattleAI.INSTANCE.calculateNextMove(t2Choosen, t1Choosen);
+                t2Choosen.dealDamage(t1Choosen, t2ChoosenMove);
                 if(t1Choosen.getHp() <= 0){
                     myPokemon.setOpacity(0.1);
                     System.out.println("Your pokemon has been fainted!" + '\n' + '\n');
