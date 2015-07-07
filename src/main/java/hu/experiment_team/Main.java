@@ -7,8 +7,11 @@ import hu.experiment_team.models.Trainer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,8 +36,8 @@ public class Main extends Application {
         Pokemon t2Choosen = t2.getPartyPokemons().get(0);
 
         stage.setTitle("Pokémon");
-        stage.setWidth(400);
-        stage.setHeight(330);
+        stage.setWidth(800);
+        stage.setHeight(482);
 
         // Initialize buttons
         Button btnFight = new Button("Fight");
@@ -52,7 +55,7 @@ public class Main extends Application {
 
         // Initialize screen components
         VBox root = new VBox();
-        HBox upperScreen = new HBox();
+        AnchorPane upperScreen = new AnchorPane();
         HBox lowerScreen = new HBox();
         VBox lowerScreenMoveButtons = new VBox();
         VBox lowerScreenActionButtons = new VBox();
@@ -64,12 +67,28 @@ public class Main extends Application {
         HBox actionBottomHolder = new HBox();
 
         upperScreen.getStyleClass().add("upperScreen");
-        upperScreen.setPrefWidth(400);
-        upperScreen.setPrefHeight(238);
+        upperScreen.setPrefWidth(800);
+        upperScreen.setPrefHeight(400);
 
         // Initialize pokemons
+
+        HBox myPokemonContainer = new HBox();
+        myPokemonContainer.getStyleClass().add("myPokemonContainer");
+        HBox opponentPokemonContainer = new HBox();
+        opponentPokemonContainer.getStyleClass().add("opponentPokemonContainer");
+
         ImageView myPokemon = new ImageView(new Image("images/Battlers/"+Utility.INSTANCE.getImageName(t1Choosen.getId())+"b.gif"));
         ImageView opponentPokemon = new ImageView(new Image("images/Battlers/"+Utility.INSTANCE.getImageName(t2Choosen.getId())+".gif"));
+
+        myPokemonContainer.getChildren().add(myPokemon);
+        opponentPokemonContainer.getChildren().add(opponentPokemon);
+
+        /* RESIZE POKEMONS
+        myPokemon.fitWidthProperty().bind(myPokemonContainer.widthProperty());
+        myPokemon.fitHeightProperty().bind(myPokemonContainer.heightProperty());
+        opponentPokemon.fitWidthProperty().bind(opponentPokemonContainer.widthProperty());
+        opponentPokemon.fitHeightProperty().bind(opponentPokemonContainer.heightProperty());
+        */
 
 
         menuTopImage.getStyleClass().add("menuTopImage");
@@ -89,11 +108,11 @@ public class Main extends Application {
         actionTopHolder.getChildren().addAll(btnFight, btnBag);
         actionBottomHolder.getChildren().addAll(btnPokemon, btnRun);
 
-        upperScreen.getChildren().addAll(opponentPokemon, myPokemon);
-        myPokemon.setTranslateX(-70);
-        myPokemon.setTranslateY(110);
-        opponentPokemon.setTranslateX(260);
-        opponentPokemon.setTranslateY(60);
+        AnchorPane.setBottomAnchor(myPokemonContainer, 0.0);
+        AnchorPane.setLeftAnchor(myPokemonContainer, 0.0);
+        AnchorPane.setTopAnchor(opponentPokemonContainer, 150.0);
+        AnchorPane.setRightAnchor(opponentPokemonContainer, 150.0);
+        upperScreen.getChildren().addAll(opponentPokemonContainer, myPokemonContainer);
 
         // Action gombok hozzáadás a Hboxhoz
         lowerScreenActionButtons.getChildren().addAll(menuTopImage, actionTopHolder, actionBottomHolder);
@@ -105,14 +124,15 @@ public class Main extends Application {
         // Alsó és felső Hbox hozzáadása a roothoz
         root.getChildren().addAll(upperScreen, lowerScreen);
 
-        Scene primaryScene = new Scene(root, 400, 300);
+        Scene primaryScene = new Scene(root, 800, 482);
         primaryScene.getStylesheets().add("css/master.css");
         stage.setScene(primaryScene);
 
         stage.setResizable(false);
         stage.show();
 
-        if(t1Choosen.getMove1() != null){
+        /*
+                if(t1Choosen.getMove1() != null){
             btnMove1.setOnAction(e -> {
                 t1Choosen.dealDamage(t2Choosen, t1Choosen.getMove1());
                 Move t2ChoosenMove = BattleAI.INSTANCE.calculateNextMove(t2Choosen, t1Choosen);
@@ -176,6 +196,7 @@ public class Main extends Application {
                 }
             });
         }
+        * */
 
     }
 
