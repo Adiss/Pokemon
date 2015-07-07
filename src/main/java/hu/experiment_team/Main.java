@@ -5,8 +5,10 @@ import hu.experiment_team.models.Move;
 import hu.experiment_team.models.Pokemon;
 import hu.experiment_team.models.Trainer;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
@@ -70,6 +72,73 @@ public class Main extends Application {
         upperScreen.setPrefWidth(800);
         upperScreen.setPrefHeight(400);
 
+        // Pokémon HPBars
+        // My HPBAR
+        VBox myPHpPanel = new VBox();
+        myPHpPanel.setSpacing(5);
+
+        HBox myPNameAndLevelContainer = new HBox();
+        Label myPokemonName = new Label(t1Choosen.getName());
+        myPokemonName.getStyleClass().add("labelText");
+        myPokemonName.setStyle("-fx-font-weight: bold");
+        Label myPokemonLevel = new Label("Lv"+t1Choosen.getLevel());
+        myPokemonLevel.getStyleClass().add("labelText");
+        myPNameAndLevelContainer.getChildren().addAll(myPokemonName, myPokemonLevel);
+        myPNameAndLevelContainer.setSpacing(30);
+
+        ImageView myStatusEffect = new ImageView(new Image("images/effects/burn.png"));
+        HBox myHpBarContainer = new HBox();
+        Label myPokemonHPLabel = new Label("HP: ");
+        myPokemonHPLabel.getStyleClass().add("labelText");
+        ProgressBar myHp = new ProgressBar(1.0);
+        myHp.getStyleClass().add("greenProgressBar");
+        myHpBarContainer.getChildren().addAll(myPokemonHPLabel, myHp, myStatusEffect);
+        myHpBarContainer.setSpacing(10);
+
+        HBox myExpContainer = new HBox();
+        Label myPokemonExpLabel = new Label("EXP: ");
+        myPokemonExpLabel.getStyleClass().add("labelText");
+        ProgressBar myExp = new ProgressBar(0.6);
+        myExp.getStyleClass().add("purpleProgressBar");
+        myExpContainer.setSpacing(6);
+        myExpContainer.getChildren().addAll(myPokemonExpLabel, myExp);
+
+        myPHpPanel.getChildren().addAll(myPNameAndLevelContainer, myHpBarContainer, myExpContainer);
+        myPHpPanel.getStyleClass().add("hpBarContainer");
+
+        //ENEMY HPBAR
+        VBox oppPHpPanel = new VBox();
+        oppPHpPanel.setSpacing(5);
+
+        HBox oppPNameAndLevelContainer = new HBox();
+        Label oppPokemonName = new Label(t2Choosen.getName());
+        oppPokemonName.setStyle("-fx-font-weight: bold");
+        oppPokemonName.getStyleClass().add("labelText");
+        Label oppPokemonLevel = new Label("Lv"+t2Choosen.getLevel());
+        oppPokemonLevel.getStyleClass().add("labelText");
+        oppPNameAndLevelContainer.getChildren().addAll(oppPokemonName, oppPokemonLevel);
+        oppPNameAndLevelContainer.setSpacing(30);
+
+        ImageView oppStatusEffect = new ImageView(new Image("images/effects/burn.png"));
+        HBox oppHpBarContainer = new HBox();
+        Label oppPokemonHPLabel = new Label("HP: ");
+        oppPokemonHPLabel.getStyleClass().add("labelText");
+        ProgressBar oppHp = new ProgressBar(1.0);
+        oppHp.getStyleClass().add("greenProgressBar");
+        oppHpBarContainer.getChildren().addAll(oppPokemonHPLabel, oppHp, oppStatusEffect);
+        oppHpBarContainer.setSpacing(10);
+
+        HBox oppExpContainer = new HBox();
+        Label oppPokemonExpLabel = new Label("EXP: ");
+        oppPokemonExpLabel.getStyleClass().add("labelText");
+        ProgressBar oppExp = new ProgressBar(0.6);
+        oppExp.getStyleClass().add("purpleProgressBar");
+        oppExpContainer.setSpacing(6);
+        oppExpContainer.getChildren().addAll(oppPokemonExpLabel, oppExp);
+
+        oppPHpPanel.getChildren().addAll(oppPNameAndLevelContainer, oppHpBarContainer, oppExpContainer);
+        oppPHpPanel.getStyleClass().add("hpBarContainer");
+
         // Initialize pokemons
 
         HBox myPokemonContainer = new HBox();
@@ -108,11 +177,23 @@ public class Main extends Application {
         actionTopHolder.getChildren().addAll(btnFight, btnBag);
         actionBottomHolder.getChildren().addAll(btnPokemon, btnRun);
 
+        // Az én pkémonom helye
         AnchorPane.setBottomAnchor(myPokemonContainer, 0.0);
-        AnchorPane.setLeftAnchor(myPokemonContainer, 0.0);
-        AnchorPane.setTopAnchor(opponentPokemonContainer, 150.0);
-        AnchorPane.setRightAnchor(opponentPokemonContainer, 150.0);
-        upperScreen.getChildren().addAll(opponentPokemonContainer, myPokemonContainer);
+        AnchorPane.setLeftAnchor(myPokemonContainer, 20.0);
+
+        //Az enemy pokémon helye
+        AnchorPane.setTopAnchor(opponentPokemonContainer, 130.0);
+        AnchorPane.setRightAnchor(opponentPokemonContainer, 130.0);
+
+        // Az én HPBar-om helye
+        AnchorPane.setRightAnchor(myPHpPanel, 90.0);
+        AnchorPane.setBottomAnchor(myPHpPanel, 20.0);
+
+        // Enemy HPBar helye
+        AnchorPane.setLeftAnchor(oppPHpPanel, 90.0);
+        AnchorPane.setTopAnchor(oppPHpPanel, 40.0);
+
+        upperScreen.getChildren().addAll(opponentPokemonContainer, myPokemonContainer, myPHpPanel, oppPHpPanel);
 
         // Action gombok hozzáadás a Hboxhoz
         lowerScreenActionButtons.getChildren().addAll(menuTopImage, actionTopHolder, actionBottomHolder);
