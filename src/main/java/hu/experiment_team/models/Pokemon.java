@@ -1,7 +1,6 @@
 package hu.experiment_team.models;
 
 import hu.experiment_team.Effectiveness;
-import hu.experiment_team.SpellScripts;
 
 import java.util.Random;
 
@@ -297,6 +296,15 @@ public class Pokemon {
     private int statusEffect = 0;
     private int sleepCounter = 0;
     private int confusionCounter = 0;
+    private int isFlinched = 0;
+    private int isMinimized = 0;
+    private int isSafeGuarded = 0;
+    private int safeGuardCounter = 0;
+    private int attackStage = 0;
+    private int defenseStage = 0;
+    private int spDefenseStage = 0;
+    private int spAttackStage = 0;
+    private int speedStage = 0;
 
     @Override
     public String toString() {
@@ -504,6 +512,15 @@ public class Pokemon {
     public Move getMove4() { return move4; }
     public int getOwnedID() { return ownedID; }
     public int getStatusEffect() { return statusEffect; }
+    public int getMaxHp() { return maxHp; }
+    public int isMinimized() { return isMinimized; }
+    public int isFlinched() { return isFlinched; }
+    public int getSafeGuardCounter() { return safeGuardCounter; }
+    public int getAttackStage() { return attackStage; }
+    public int getDefenseStage() { return defenseStage; }
+    public int getSpeedStage() { return speedStage; }
+    public int getSpAttackStage() { return spAttackStage; }
+    public int getSpDefenseStage() { return spDefenseStage; }
 
     public void setHp(int val){ this.hp = val; }
     public void setEvasion(int val){ this.evasion = val; }
@@ -513,6 +530,18 @@ public class Pokemon {
     public void setMove4(Move val){ this.move4 = val; }
     public void setCurrentXp(int val){ this.currentXp = val; }
     public void setOwnedID(int val){ this.ownedID = val; }
+    public void setSafeGuardCounter(int val){ this.safeGuardCounter = val; }
+    public void setAttackStage(int val) { this.attackStage = val; }
+    public void setDefenseStage(int val) { this.defenseStage = val; }
+    public void setSpAttackStage(int val) { this.spAttackStage = val; }
+    public void setSpDefenseStage(int val) { this.spDefenseStage = val; }
+    public void setSpeedStage(int val) { this.speedStage = val; }
+    public void setSpAttack(int val) { this.attack = val; }
+    public void setSpDefense(int val) { this.defense = val; }
+    public void setAttack(int val) { this.attack = val; }
+    public void setDefense(int val) { this.defense = val; }
+    public void setSpeed(int val) { this.speed = val; }
+
 
     /**
      * This method counts the size of the inflicted damage
@@ -545,82 +574,7 @@ public class Pokemon {
             // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
             opponent.setHp(opponent.getHp()-(int)damage);
 
-            // Státusz effectek felrakása.
-            // BURN:
-            if(SpellScripts.GET.BurnSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applyBurn();
-                }
-            }
-            // FREEZE:
-            if(SpellScripts.GET.FreezeSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applyFreeze();
-                }
-            }
-            // PARALYSIS:
-            if(SpellScripts.GET.ParalysisSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applyParalysis();
-                }
-            }
-            // POISON:
-            if(SpellScripts.GET.PoisonSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applyPoison();
-                }
-            }
-            // BADLY POISON:
-            if(SpellScripts.GET.BadlyPoisonSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applyBadlyPoison();
-                }
-            }
-            // SLEEP:
-            if(SpellScripts.GET.SleepSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applySleep();
-                }
-            }
-            // ATTRACT:
-            if(SpellScripts.GET.AttractSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applyAttract();
-                }
-            }
-            // CONFUSION:
-            if(SpellScripts.GET.ConfusionSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applyConfusion();
-                }
-            }
-            // CURSE:
-            if(SpellScripts.GET.CurseSpells().contains(m.getInternalName())) {
-                if ((int) rand <= m.getAdditionalEffectChance()) {
-                    opponent.applyCurse();
-                }
-            }
-
-            // Státusz effektek végrehajtása
-            switch(opponent.statusEffect){
-                case 1:
-                    opponent.doBurn();
-                    break;
-                case 4:
-                    opponent.doPoison();
-                    break;
-                case 5:
-                    opponent.doBadlyPoison();
-                    break;
-                case 8:
-                    opponent.doConfusion();
-                    break;
-                case 9:
-                    opponent.doCurse();
-                    break;
-                default:
-                    break;
-            }
+            m.usePP();
 
             // Logoljuk a dolgokat. TODO -> Loggert beépíteni.
             System.out.println(this.getName() + " has dealt " + damage + " damage to " + opponent.getName() + " with " + m.getDisplayName());
@@ -1068,5 +1022,33 @@ public class Pokemon {
     public void healCurse(){
         this.statusEffect = 0;
     }
+
+    /**
+     * Flinch<br>
+     * Flinching is when a Pokémon becomes unable to attack for one turn.
+     * */
+    public void applyFlinch(){
+        this.isFlinched = 1;
+    }
+
+    /**
+     * Minimize
+     * */
+    public void applyMinimize(){
+        this.isMinimized = 1;
+        // TODO -> Increases the user's evasion by 2 stages.
+    }
+
+    /**
+     * SafeGuard
+     * */
+    public void applySafeGuard(){
+        this.isSafeGuarded = 1;
+        safeGuardCounter = 5;
+    }
+    public void doSafeGuard(){
+        this.safeGuardCounter -= 1;
+    }
+
 
 }

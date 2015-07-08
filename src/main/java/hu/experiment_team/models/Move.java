@@ -110,6 +110,10 @@ public class Move {
      * The double quote marks in the description must also be preceded by a backslash "\".
      * */
     private final String description;
+    /**
+     * A move aktuális PP-je
+     * */
+    private int actualPP;
 
     /**
      * This class handles the constructor
@@ -174,6 +178,7 @@ public class Move {
         flags = builder.flags;
         contestType = builder.contestType;
         description = builder.description;
+        actualPP = builder.totalPP;
     }
 
     public int getId() { return Id; }
@@ -191,6 +196,9 @@ public class Move {
     public String getFlags() { return flags; }
     public String getContestType() { return contestType; }
     public String getDescription() { return description; }
+    public int getActualPP() { return actualPP; }
+
+    public void usePP() { this.actualPP -= 1; }
 
     @Override
     public String toString() {
