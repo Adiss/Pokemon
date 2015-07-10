@@ -22,10 +22,10 @@ public enum BattleAI {
     public Move calculateNextMove(Pokemon a, Pokemon d){
 
         List<Move> attackerMoves = new ArrayList<Move>(){{
-            if(a.getMove1() != null) add(a.getMove1());
-            if(a.getMove2() != null) add(a.getMove2());
-            if(a.getMove3() != null) add(a.getMove3());
-            if(a.getMove4() != null) add(a.getMove4());
+            if(a.getMoves().get(1) != null) add(a.getMoves().get(1));
+            if(a.getMoves().get(2) != null) add(a.getMoves().get(2));
+            if(a.getMoves().get(3) != null) add(a.getMoves().get(3));
+            if(a.getMoves().get(4) != null) add(a.getMoves().get(4));
         }};
 
         int min = Integer.MAX_VALUE;
@@ -33,7 +33,7 @@ public enum BattleAI {
         int depth = 4;
 
         for(Move actualMove : attackerMoves){
-            int newState = d.getHp();
+            int newState = d.getBaseStats().get("hp");
             int v = calculateNextMoveValue(a, d, newState, depth-1, attackerMoves);
             if(v < min){
                 min = v;
@@ -81,17 +81,17 @@ public enum BattleAI {
             double userAttack;
             double oppDefense;
             if(m.getMoveCategory().equals("Physical")){
-                userAttack = (2 * att.getLevel() + 10) * att.getAttack() * m.getBaseDamage();
-                oppDefense = 250 * (def.getDefense());
+                userAttack = (2 * att.getLevel() + 10) * att.getBaseStats().get("attack") * m.getBaseDamage();
+                oppDefense = 250 * (def.getBaseStats().get("defense"));
             } else {
-                userAttack = (2 * att.getLevel() + 10) * att.getSpAttack() * m.getBaseDamage();
-                oppDefense = 250 * (def.getSpDefense());
+                userAttack = (2 * att.getLevel() + 10) * att.getBaseStats().get("spattack") * m.getBaseDamage();
+                oppDefense = 250 * (def.getBaseStats().get("spdefense"));
             }
             double modifiers = typeEffectiveness * STAB * rand;
             damage = Math.floor(( userAttack / oppDefense + 2 ) * modifiers);
         }
 
-        return def.getHp()-(int)damage;
+        return def.getBaseStats().get("hp")-(int)damage;
     }
 
 }

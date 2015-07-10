@@ -194,7 +194,7 @@ public class Trainer {
      * */
     public List<Pokemon> getPartyPokemons() {
         return new ArrayList<Pokemon>(){{
-            addAll(partyPokemons.stream().filter(p -> p.getHp() > 0).collect(Collectors.toList()));
+            addAll(partyPokemons.stream().filter(p -> p.getBaseStats().get("hp") > 0).collect(Collectors.toList()));
         }};
     }
     /**

@@ -1,7 +1,11 @@
 package hu.experiment_team.models;
 
-import hu.experiment_team.Effectiveness;
+import hu.experiment_team.Move_Functions;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -15,6 +19,11 @@ public class Pokemon {
      * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
     private final int ownerId;
+    /**
+     * Annak a pokémonnak az id-je amit birtokolnak. Ez egyedi.
+     * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
+     * */
+    private int ownedID;
     /**
      * A pokémon adatbázis beli ID-je
      * */
@@ -55,14 +64,11 @@ public class Pokemon {
      *  - Speed
      *  - Special Attack
      *  - Special Defense
+     *  - Accuracy
+     *  - Evasion
      * Each value can be between 0 and 255.
      * */
-    private int hp;
-    private int attack;
-    private int defense;
-    private int speed;
-    private int spAttack;
-    private int spDefense;
+    private Map<String, Integer> baseStats;
     /**
      * The catch rate of this species. Is a number between 0 and 255.
      * The higher the number, the more likely a capture (0 means it cannot be caught by anything except a Master Ball).
@@ -135,12 +141,7 @@ public class Pokemon {
      *   - Special Defense
      * As a rule, the total of these numbers should be between 1 and 3, and higher evolutions tend to give more EVs.
      * */
-    private int effortPointsHp;
-    private int effortPointsAttack;
-    private int effortPointsDefense;
-    private int effortPointsSpeed;
-    private int effortPointsSpAttack;
-    private int effortPointsSpDefense;
+    private Map<String, Integer> effortPoints;
     /**
      * Up to 4 additional abilities this species can have.
      * Is the internal names of those abilities, separated by commas.
@@ -221,63 +222,16 @@ public class Pokemon {
      * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
     private int level;
-    private int evasion;
-    private int maxEvasion;
     /**
-     * A pokémon első képessége
-     * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
+     * A pokémon első képességei
+     * Ez a mező csak akkor használatos, ha a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
-    private Move move1;
+    private Map<Integer, Move> moves;
     /**
-     * A pokémon második képessége
-     * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
-     * */
-    private Move move2;
-    /**
-     * A pokémon harmadik képessége
-     * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
-     * */
-    private Move move3;
-    /**
-     * A pokémon negyedik képessége
-     * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
-     * */
-    private Move move4;
-    /**
-     * Annak a pokémonnak az id-je amit birtokolnak. Ez egyedi.
-     * Ez a stat csak akkor van, a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
-     * */
-    private int ownedID;
-    /**
-     * Ez az érték mutatja a pokémon maximális HP-ját.
+     * Ebben a Map-ban tároljuk a pokémon alapértékeit, azaz a buffok nélküli statokat.
      * Erre az effektek miatt van szükség.
      * */
-    private int maxHp;
-    /**
-     * Ez az érték mutatja a pokémon maximális Attack-ját.
-     * Erre az effektek miatt van szükség.
-     * */
-    private int maxAttack;
-    /**
-     * Ez az érték mutatja a pokémon maximális Defense-ét.
-     * Erre az effektek miatt van szükség.
-     * */
-    private int maxDefense;
-    /**
-     * Ez az érték mutatja a pokémon maximális Special Attack-ját.
-     * Erre az effektek miatt van szükség.
-     * */
-    private int maxSpecialAttack;
-    /**
-     * Ez az érték mutatja a pokémon maximális Special Defense-ét.
-     * Erre az effektek miatt van szükség.
-     * */
-    private int maxSpecialDefense;
-    /**
-     * Ez az érték mutatja a pokémon maximális Speed-jét.
-     * Erre az effektek miatt van szükség.
-     * */
-    private int maxSpeed;
+    private Map<String, Integer> maxStats;
     /**
      * Ez a flag jelzi, hogy a pokémonon van-e valamilyen status effect
      *
@@ -292,25 +246,16 @@ public class Pokemon {
      *   - 7 = Attract
      *   - 8 = Confusion
      *   - 9 = Curse
-    * */
-    private int statusEffect = 0;
-    private int sleepCounter = 0;
-    private int confusionCounter = 0;
-    private int isFlinched = 0;
-    private int isMinimized = 0;
-    private int isSafeGuarded = 0;
-    private int safeGuardCounter = 0;
-    private int attackStage = 0;
-    private int defenseStage = 0;
-    private int spDefenseStage = 0;
-    private int spAttackStage = 0;
-    private int speedStage = 0;
+     * */
+    private int statusEffect;
+    private Map<String, Integer> counters;
+    private Map<String, Integer> statStages;
+    private Map<String, Integer> flags;
 
     @Override
     public String toString() {
         return "Name: " + name + ", level: " + level;
     }
-
 
     /**
      * This class handles the constructor
@@ -322,15 +267,11 @@ public class Pokemon {
         private int id;
         private String name;
         private String internalName;
-        private int hp;
-        private int attack;
-        private int defense;
-        private int speed;
-        private int spAttack;
-        private int spDefense;
+        private Map<String, Integer> baseStats;
 
         // Optional parameters
-        private int ownerId = 0;
+        private int ownerID = 0;
+        private int ownedID = 0;
         private String kind = "null";
         private String pokeDex = "null";
         private String type1 = "null";
@@ -358,26 +299,29 @@ public class Pokemon {
         private int battlerEnemyY = 0;
         private int battlerAltitude = 0;
         private int level = 1;
-        private int evasion = 100;
         private Move move1 = null;
         private Move move2 = null;
         private Move move3 = null;
         private Move move4 = null;
-        private int ownedID = 0;
 
         public Builder(int id, String name, String internalName, int hp, int attack, int defense, int speed, int spAttack, int spDefense){
             this.id = id;
             this.name = name;
             this.internalName = internalName;
-            this.hp = hp;
-            this.attack = attack;
-            this.defense = defense;
-            this.speed= speed;
-            this.spAttack = spAttack;
-            this.spDefense = spDefense;
+            this.baseStats = new HashMap<String, Integer>(){{
+                put("hp", hp);
+                put("attack", attack);
+                put("defense", defense);
+                put("spattack", spAttack);
+                put("spdefense", spDefense);
+                put("speed", speed);
+                put("accuracy", 0);
+                put("evasion", 0);
+                put("crit", 6);
+            }};
         }
 
-        public Builder ownerId(int val){ ownerId = val; return this; }
+        public Builder ownerId(int val){ ownerID = val; return this; }
         public Builder kind(String val){ kind = val; return this; }
         public Builder pokeDex(String val){ pokeDex = val; return this; }
         public Builder type1(String val){ type1 = val; return this; }
@@ -405,7 +349,6 @@ public class Pokemon {
         public Builder battlerPlayerY(int val){ battlerPlayerY = val; return this; }
         public Builder battlerAltitude(int val){ battlerAltitude = val; return this; }
         public Builder level(int val){ level = val; return this; }
-        public Builder evasion(int val){ evasion = val; return this; }
         public Builder move1(Move val){ move1 = val; return this; }
         public Builder move2(Move val){ move2 = val; return this; }
         public Builder move3(Move val){ move3 = val; return this; }
@@ -416,7 +359,7 @@ public class Pokemon {
     }
 
     private Pokemon(Builder builder){
-        ownerId = builder.ownerId;
+        ownerId = builder.ownerID;
         Id = builder.id;
         name = builder.name;
         internalName = builder.internalName;
@@ -424,12 +367,7 @@ public class Pokemon {
         pokeDex = builder.pokeDex;
         type1 = builder.type1;
         type2 = builder.type2;
-        hp = builder.hp;
-        attack = builder.attack;
-        defense = builder.defense;
-        speed = builder.speed;
-        spAttack = builder.spAttack;
-        spDefense = builder.spDefense;
+        baseStats = builder.baseStats;
         rareness = builder.rareness;
         baseExp = builder.baseExp;
         currentXp = builder.currentXp;
@@ -438,12 +376,14 @@ public class Pokemon {
         stepsToHatch = builder.stepsToHatch;
         color = builder.color;
         habitat = builder.habitat;
-        effortPointsHp = builder.effortPointsHp;
-        effortPointsAttack = builder.effortPointsAttack;
-        effortPointsDefense = builder.effortPointsDefense;
-        effortPointsSpeed = builder.effortPointsSpeed;
-        effortPointsSpAttack = builder.effortPointsSpAttack;
-        effortPointsSpDefense = builder.effortPointsSpDefense;
+        effortPoints = new HashMap<String, Integer>(){{
+            put("hp", builder.effortPointsHp);
+            put("attack", builder.effortPointsHp);
+            put("defense", builder.effortPointsAttack);
+            put("spattack", builder.effortPointsDefense);
+            put("spdefense", builder.effortPointsSpAttack);
+            put("speed", builder.effortPointsSpDefense);
+        }};
         hiddenAbility = builder.hiddenAbility;
         compatibility = builder.compatibility;
         height = builder.height;
@@ -453,95 +393,224 @@ public class Pokemon {
         battlerEnemyY = builder.battlerEnemyY;
         battlerAltitude = builder.battlerAltitude;
         level = builder.level;
-        evasion = builder.evasion;
-        maxEvasion = builder.evasion;
-        move1 = builder.move1;
-        move2 = builder.move2;
-        move3 = builder.move3;
-        move4 = builder.move4;
+        moves = new HashMap<Integer, Move>(){{
+            put(1, builder.move1);
+            put(2, builder.move2);
+            put(3, builder.move3);
+            put(4, builder.move4);
+        }};
         ownedID = builder.ownedID;
-        maxHp = builder.hp;
-        maxAttack = builder.attack;
-        maxDefense = builder.defense;
-        maxSpecialAttack = builder.spAttack;
-        maxSpecialDefense = builder.spDefense;
-        maxSpeed = builder.speed;
+        maxStats = new HashMap<String, Integer>(){{
+            put("hp", builder.baseStats.get("hp"));
+            put("attack", builder.baseStats.get("attack"));
+            put("defense", builder.baseStats.get("defense"));
+            put("spattack", builder.baseStats.get("spattack"));
+            put("spdefense", builder.baseStats.get("spdefense"));
+            put("speed", builder.baseStats.get("speed"));
+        }};
+        counters = new HashMap<String, Integer>(){{
+            put("sleep", 0);
+            put("confusion", 0);
+            put("safeguard", 0);
+            put("badlypoison", 1);
+        }};
+        statStages = new HashMap<String, Integer>(){{
+            put("hp", 0);
+            put("attack", 0);
+            put("defense", 0);
+            put("spattack", 0);
+            put("spdefense", 0);
+            put("speed", 0);
+            put("accuracy", 0);
+            put("evasion", 0);
+        }};
+        statusEffect = 0;
+        flags = new HashMap<String, Integer>(){{
+            put("flinched", 0);
+            put("minimized", 0);
+            put("safeguarded", 0);
+        }};
     }
 
-    public int getOwnerId() { return ownerId; }
-    public int getId() { return Id; }
-    public String getName() { return name; }
-    public String getInternalName() { return internalName; }
-    public String getKind() { return kind; }
-    public String getPokeDex() { return pokeDex; }
-    public String getType1() { return type1; }
-    public String getType2() { return type2; }
-    public int getHp() { return hp; }
-    public int getAttack() { return attack; }
-    public int getDefense() { return defense; }
-    public int getSpeed() { return speed; }
-    public int getSpAttack() { return spAttack; }
-    public int getSpDefense() { return spDefense; }
-    public int getRareness() { return rareness; }
-    public int getBaseExp() { return baseExp; }
-    public int getCurrentXp() { return currentXp; }
-    public int getHappiness() { return happiness; }
-    public String getGrowthRate() { return growthRate; }
-    public int getStepsToHatch() { return stepsToHatch; }
-    public String getColor() { return color; }
-    public String getHabitat() { return habitat; }
-    public int getEffortPointsHp() { return effortPointsHp; }
-    public int getEffortPointsAttack() { return effortPointsAttack; }
-    public int getEffortPointsDefense() { return effortPointsDefense; }
-    public int getEffortPointsSpeed() { return effortPointsSpeed; }
-    public int getEffortPointsSpAttack() { return effortPointsSpAttack; }
-    public int getEffortPointsSpDefense() { return effortPointsSpDefense; }
-    public String getHiddenAbility() { return hiddenAbility; }
-    public String getCompatibility() { return compatibility; }
-    public double getHeight() { return height; }
-    public double getWeight() { return weight; }
-    public String getGenderRate() { return genderRate; }
-    public int getBattlerPlayerY() { return battlerPlayerY; }
-    public int getBattlerEnemyY() { return battlerEnemyY; }
-    public int getBattlerAltitude() { return battlerAltitude; }
-    public int getLevel() { return level; }
-    public int getEvasion() { return evasion; }
-    public Move getMove1() { return move1; }
-    public Move getMove2() { return move2; }
-    public Move getMove3() { return move3; }
-    public Move getMove4() { return move4; }
-    public int getOwnedID() { return ownedID; }
-    public int getStatusEffect() { return statusEffect; }
-    public int getMaxHp() { return maxHp; }
-    public int isMinimized() { return isMinimized; }
-    public int isFlinched() { return isFlinched; }
-    public int getSafeGuardCounter() { return safeGuardCounter; }
-    public int getAttackStage() { return attackStage; }
-    public int getDefenseStage() { return defenseStage; }
-    public int getSpeedStage() { return speedStage; }
-    public int getSpAttackStage() { return spAttackStage; }
-    public int getSpDefenseStage() { return spDefenseStage; }
+    public int getOwnerId() {
+        return ownerId;
+    }
 
-    public void setHp(int val){ this.hp = val; }
-    public void setEvasion(int val){ this.evasion = val; }
-    public void setMove1(Move val){ this.move1 = val; }
-    public void setMove2(Move val){ this.move2 = val; }
-    public void setMove3(Move val){ this.move3 = val; }
-    public void setMove4(Move val){ this.move4 = val; }
-    public void setCurrentXp(int val){ this.currentXp = val; }
-    public void setOwnedID(int val){ this.ownedID = val; }
-    public void setSafeGuardCounter(int val){ this.safeGuardCounter = val; }
-    public void setAttackStage(int val) { this.attackStage = val; }
-    public void setDefenseStage(int val) { this.defenseStage = val; }
-    public void setSpAttackStage(int val) { this.spAttackStage = val; }
-    public void setSpDefenseStage(int val) { this.spDefenseStage = val; }
-    public void setSpeedStage(int val) { this.speedStage = val; }
-    public void setSpAttack(int val) { this.attack = val; }
-    public void setSpDefense(int val) { this.defense = val; }
-    public void setAttack(int val) { this.attack = val; }
-    public void setDefense(int val) { this.defense = val; }
-    public void setSpeed(int val) { this.speed = val; }
+    public int getOwnedID() {
+        return ownedID;
+    }
 
+    public int getId() {
+        return Id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getInternalName() {
+        return internalName;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public String getPokeDex() {
+        return pokeDex;
+    }
+
+    public String getType1() {
+        return type1;
+    }
+
+    public String getType2() {
+        return type2;
+    }
+
+    public Map<String, Integer> getBaseStats() {
+        return baseStats;
+    }
+
+    public void setBaseStat(String s, Integer i) {
+        this.baseStats.put(s, i);
+    }
+
+    public int getRareness() {
+        return rareness;
+    }
+
+    public int getBaseExp() {
+        return baseExp;
+    }
+
+    public int getCurrentXp() {
+        return currentXp;
+    }
+
+    public void setCurrentXp(int currentXp) {
+        this.currentXp = currentXp;
+    }
+
+    public int getHappiness() {
+        return happiness;
+    }
+
+    public void setHappiness(int happiness) {
+        this.happiness = happiness;
+    }
+
+    public String getGrowthRate() {
+        return growthRate;
+    }
+
+    public int getStepsToHatch() {
+        return stepsToHatch;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getHabitat() {
+        return habitat;
+    }
+
+    public Map<String, Integer> getEffortPoints() {
+        return effortPoints;
+    }
+
+    public void setEffortPoint(String s, Integer i) {
+        this.effortPoints.put(s, i);
+    }
+
+    public String getHiddenAbility() {
+        return hiddenAbility;
+    }
+
+    public String getCompatibility() {
+        return compatibility;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public String getGenderRate() {
+        return genderRate;
+    }
+
+    public int getBattlerPlayerY() {
+        return battlerPlayerY;
+    }
+
+    public int getBattlerEnemyY() {
+        return battlerEnemyY;
+    }
+
+    public int getBattlerAltitude() {
+        return battlerAltitude;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public Map<Integer, Move> getMoves() {
+        return moves;
+    }
+
+    public void setMove(Integer i, Move m) {
+        this.moves.put(i, m);
+    }
+
+    public Map<String, Integer> getMaxStats() {
+        return maxStats;
+    }
+
+    public void setMaxStat(String s, Integer i) {
+        this.maxStats.put(s, i);
+    }
+
+    public int getStatusEffect() {
+        return statusEffect;
+    }
+
+    public void setStatusEffect(int statusEffect) {
+        this.statusEffect = statusEffect;
+    }
+
+    public Map<String, Integer> getCounters() {
+        return counters;
+    }
+
+    public void setCounter(String s, Integer i) {
+        this.counters.put(s, i);
+    }
+
+    public Map<String, Integer> getStatStages() {
+        return statStages;
+    }
+
+    public void setStatStage(String s, Integer i) {
+        this.statStages.put(s, i);
+    }
+
+    public Map<String, Integer> getFlags() {
+        return flags;
+    }
+
+    public void setFlag(String s, Integer i) {
+        this.flags.put(s, i);
+    }
 
     /**
      * This method counts the size of the inflicted damage
@@ -550,63 +619,22 @@ public class Pokemon {
      * */
     public void dealDamage(Pokemon opponent, Move m){
 
-        // A sebzés mértékének kiszámítása.
-        double STAB = this.getType1().equals(m.getType()) || this.getType2().equals(m.getType()) ? 1.5 : 1.0;
-        double typeEffectiveness = Effectiveness.INSTANCE.get(m.getType(), opponent.getType1())*10;
-        Random r = new Random(); double rand = 0.85 + (1.0-0.85) * r.nextDouble();
-
-        double userAttack;
-        double oppDefense;
-        if(m.getMoveCategory().equals("Physical")){
-            userAttack = (2 * this.level + 10) * this.attack * m.getBaseDamage();
-            oppDefense = 250 * (opponent.getDefense());
-        } else {
-            userAttack = (2 * this.level + 10) * this.spAttack * m.getBaseDamage();
-            oppDefense = 250 * (opponent.getSpDefense());
-        }
-        double modifiers = typeEffectiveness * STAB * rand;
-        int damage = (int)Math.floor(( userAttack / oppDefense + 2 ) * modifiers);
-
-        rand = r.nextInt(99) + 1;
+        Random r = new Random();
+        int rand = r.nextInt(99) + 1;
 
         if((this.getStatusEffect() != 2) && (this.getStatusEffect() != 3) && (this.getStatusEffect() != 6) && (this.getStatusEffect() != 7) && (this.getStatusEffect() != 8)){
 
-            // A sebzés értékét kivonjuk az ellenfél életpontjaiból.
-            opponent.setHp(opponent.getHp()-(int)damage);
+            for(Method method : Move_Functions.INSTANCE.getClass().getMethods()){
+                if(method.getName().contains(m.getFunctionCode()))
+                    try {
+                        method.invoke(Move_Functions.INSTANCE, this, opponent, m);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+            }
 
             m.usePP();
 
-            // Logoljuk a dolgokat. TODO -> Loggert beépíteni.
-            System.out.println(this.getName() + " has dealt " + damage + " damage to " + opponent.getName() + " with " + m.getDisplayName());
-            System.out.println(opponent.getName() + " now has " + opponent.getHp() + " health");
-
-        } else {
-            switch(this.statusEffect){
-                case 3:
-                    if(rand >= 25)
-                        opponent.setHp(opponent.getHp()-(int)damage);
-                    break;
-                case 6:
-                    if(this.sleepCounter == 0)
-                        opponent.setHp(opponent.getHp()-(int)damage);
-                    this.sleepCounter -= 1;
-                    break;
-                case 7:
-                    if(rand <= 50)
-                        opponent.setHp(opponent.getHp()-(int)damage);
-                    break;
-                case 8:
-                    if(confusionCounter == 0)
-                        opponent.setHp(opponent.getHp()-(int)damage);
-                    else {
-                        if(rand <= 50)
-                            this.doConfusion();
-                    }
-                    this.confusionCounter -= 1;
-                    break;
-                default:
-                    break;
-            }
         }
 
     }
@@ -650,19 +678,19 @@ public class Pokemon {
     public void doBurn(){
         if(this.statusEffect == 1){
             if(!(this.type1.equals("FIRE")) && !(this.type2.equals("FIRE"))){
-                this.hp = (int)Math.floor(this.hp - (this.maxHp * (0.875)));
-                if(!(this.hiddenAbility.equals("GUTS")) && (this.attack == this.maxAttack))
-                    this.attack = (int)Math.ceil(this.attack/2);
+                this.baseStats.put("hp", (int) Math.floor(this.baseStats.get("hp") - (this.maxStats.get("hp") * (0.875))));
+                if(!(this.hiddenAbility.equals("GUTS")) && (this.baseStats.get("attack") == this.maxStats.get("attack")))
+                    this.baseStats.put("attack", (int) Math.ceil(this.baseStats.get("attack") / 2));
             }
-            if(this.hiddenAbility.equals("FLAREBOOST") && (this.spAttack == this.maxSpecialAttack)){
-                this.spAttack = (int)Math.ceil(this.spAttack*2);
+            if(this.hiddenAbility.equals("FLAREBOOST") && (this.baseStats.get("spattack") == this.maxStats.get("spattack"))){
+                this.baseStats.put("spattack", (int)Math.ceil(this.baseStats.get("spattack")*2));
             }
         }
     }
     public void healBurn(){
         this.statusEffect = 0;
-        this.spAttack = this.maxSpecialAttack;
-        this.attack = this.maxAttack;
+        this.baseStats.put("spattack", this.maxStats.get("spattack"));
+        this.baseStats.put("attack", this.maxStats.get("attack"));
     }
 
     /**
@@ -700,7 +728,7 @@ public class Pokemon {
      *  @see <a href="http://www.serebii.net/games/status.shtml">http://www.serebii.net/games/status.shtml</a>
      * */
     public void applyFreeze(){
-        if(!(this.getType1().equals("ICE")) && !(this.getType2().equals("ICE")) && !(this.getHiddenAbility().equals("MAGMAARMOR"))){
+        if(!(this.type1.equals("ICE")) && !(this.type2.equals("ICE")) && !(this.hiddenAbility.equals("MAGMAARMOR"))){
             this.statusEffect = 2;
         }
     }
@@ -741,15 +769,15 @@ public class Pokemon {
      *  @see <a href="http://www.serebii.net/games/status.shtml">Serebii</a>
      * */
     public void applyParalysis(){
-        if(!(this.getHiddenAbility().equals("LIMBER")) && !(this.getType1().equals("ELECTRIC")) && !(this.getType2().equals("ELECTRIC"))){
+        if(!(this.hiddenAbility.equals("LIMBER")) && !(this.type1.equals("ELECTRIC")) && !(this.type2.equals("ELECTRIC"))){
             this.statusEffect = 3;
-            if(this.speed == this.maxSpeed)
-                this.speed = (int)Math.ceil(this.speed * 0.25);
+            if(this.baseStats.get("speed") == this.maxStats.get("speed"))
+                this.baseStats.put("speed", (int)Math.ceil(this.baseStats.get("speed") * 0.25));
         }
     }
     public void healParalysis(){
         this.statusEffect = 0;
-        this.speed = this.maxSpeed;
+        this.baseStats.put("speed", this.maxStats.get("speed"));
     }
 
     /**
@@ -790,7 +818,7 @@ public class Pokemon {
     public void doPoison(){
         if(this.statusEffect == 4){
             if(!(this.type1.equals("POISON")) && !(this.type2.equals("POISON")) && !(this.type1.equals("STEEL")) && !(this.type2.equals("STEEL")) && !(this.hiddenAbility.equals("IMMUNITY"))){
-                this.hp = (int)Math.floor(this.hp - (this.maxHp * (0.875)));
+                this.baseStats.put("hp", (int)Math.floor(this.baseStats.get("hp") - (this.maxStats.get("hp") * (0.875))));
             }
         }
     }
@@ -830,18 +858,17 @@ public class Pokemon {
     public void applyBadlyPoison(){
         this.statusEffect = 5;
     }
-    private double badlyPoisonStack = 1;
     public void doBadlyPoison(){
         if(this.statusEffect == 5){
             if(!(this.type1.equals("POISON")) && !(this.type2.equals("POISON")) && !(this.type1.equals("STEEL")) && !(this.type2.equals("STEEL")) && !(this.hiddenAbility.equals("IMMUNITY"))){
-                this.hp = (int)Math.floor(this.hp - ((this.maxHp * (0.9375))*badlyPoisonStack));
-                badlyPoisonStack +=1;
+                this.baseStats.put("hp", (int) Math.floor(this.baseStats.get("hp") - ((this.maxStats.get("hp") * (0.9375)) * this.counters.get("badlypoision"))));
+                this.counters.put("badlypoison", this.counters.get("badlypoison") + 1);
             }
         }
     }
     public void healBadlyPoison(){
         this.statusEffect = 0;
-        badlyPoisonStack = 1;
+        this.counters.put("badlypoison", 1);
     }
 
     /**
@@ -883,7 +910,7 @@ public class Pokemon {
         if(!(this.hiddenAbility.equals("INSOMNIA")) && !(this.hiddenAbility.equals("VITALSPIRIT"))){
             Random r = new Random();
             this.statusEffect = 6;
-            this.sleepCounter = r.nextInt(6)+1;
+            this.counters.put("sleep", r.nextInt(6)+1);
         }
     }
     public void healSleep(){
@@ -964,22 +991,22 @@ public class Pokemon {
         if(!(this.hiddenAbility.equals("OBLIVIOUS"))){
             Random r = new Random();
             this.statusEffect = 8;
-            this.confusionCounter = r.nextInt(3)+1;
+            this.counters.put("confusion", r.nextInt(3)+1);
         }
     }
     public void doConfusion(){
         if(this.statusEffect == 8){
-            this.hp = (int)Math.floor(this.hp - ((this.maxHp * 0.05)));
+            this.baseStats.put("hp", (int) Math.floor(this.baseStats.get("hp") - ((this.maxStats.get("hp") * 0.05))));
             if(this.hiddenAbility.equals("TANGLEDFEET")){
-                if(this.evasion == this.maxEvasion){
-                    this.evasion *= 1.2;
+                if(this.statStages.get("evasion") != 6){
+                    this.baseStats.put("evasion", this.baseStats.get("evasion")+1);
                 }
             }
         }
     }
     public void healConfusion(){
         this.statusEffect = 0;
-        this.evasion = maxEvasion;
+        this.baseStats.put("evasion", 0);
     }
 
     /**
@@ -1016,7 +1043,7 @@ public class Pokemon {
     }
     public void doCurse(){
         if(this.statusEffect == 9){
-            this.hp = (int)Math.floor(this.hp - ((this.maxHp * 0.25)));
+            this.baseStats.put("hp", (int) Math.floor(this.baseStats.get("hp") - ((this.maxStats.get("hp") * 0.25))));
         }
     }
     public void healCurse(){
@@ -1028,27 +1055,49 @@ public class Pokemon {
      * Flinching is when a Pokémon becomes unable to attack for one turn.
      * */
     public void applyFlinch(){
-        this.isFlinched = 1;
+        this.setFlag("flinched", 1);
     }
 
     /**
      * Minimize
      * */
     public void applyMinimize(){
-        this.isMinimized = 1;
-        // TODO -> Increases the user's evasion by 2 stages.
+        this.setFlag("minimized", 1);
+        this.setBaseStat("evasion", (this.baseStats.get("evasion") + 2));
+    }
+    public void clearMinimize(){
+        this.setFlag("minimized", 0);
+        this.setBaseStat("evasion", (this.baseStats.get("evasion") - 2));
     }
 
     /**
      * SafeGuard
      * */
     public void applySafeGuard(){
-        this.isSafeGuarded = 1;
-        safeGuardCounter = 5;
+        this.setFlag("safeguarded", 1);
+        this.counters.put("safeguard", 5);
     }
     public void doSafeGuard(){
-        this.safeGuardCounter -= 1;
+        this.counters.put("safeguard", (this.counters.get("safeguard")-1));
+    }
+    public void clearSafeGuard(){
+        this.setFlag("safeguarded", 0);
     }
 
+    /**
+     * Bonus Accuracy
+     * */
+    public void addAccuracy(){
+        this.baseStats.put("accuracy", (this.baseStats.get("accuracy") + 10));
+    }
+    public void resetAccuracy(){
+        this.baseStats.put("accuracy", 0);
+    }
 
+    /**
+     * Bonus Crit
+     * */
+    public void resetCrit(){
+        this.baseStats.put("crit", 6);
+    }
 }

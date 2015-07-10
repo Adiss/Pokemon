@@ -35,24 +35,24 @@ public enum Battle {
 
             do {
                 System.out.println('\n' + "Choose a spell to damage with: " + '\n');
-                    System.out.println("ID: 1 " + t1Choosen.getMove1());
-                    System.out.println("ID: 2 " + t1Choosen.getMove2());
-                    System.out.println("ID: 3 " + t1Choosen.getMove3());
-                    System.out.println("ID: 4 " + t1Choosen.getMove4());
+                    System.out.println("ID: 1 " + t1Choosen.getMoves().get(1));
+                    System.out.println("ID: 2 " + t1Choosen.getMoves().get(2));
+                    System.out.println("ID: 3 " + t1Choosen.getMoves().get(3));
+                    System.out.println("ID: 4 " + t1Choosen.getMoves().get(4));
 
                 Move t1ChoosenMove = null;
                 switch (Integer.parseInt(sc.nextLine())){
                     case 1:
-                        t1ChoosenMove = t1Choosen.getMove1();
+                        t1ChoosenMove = t1Choosen.getMoves().get(1);
                         break;
                     case 2:
-                        t1ChoosenMove = t1Choosen.getMove2();
+                        t1ChoosenMove = t1Choosen.getMoves().get(2);
                         break;
                     case 3:
-                        t1ChoosenMove = t1Choosen.getMove3();
+                        t1ChoosenMove = t1Choosen.getMoves().get(3);
                         break;
                     case 4:
-                        t1ChoosenMove = t1Choosen.getMove4();
+                        t1ChoosenMove = t1Choosen.getMoves().get(4);
                         break;
                     default:
                         System.out.println("Nincs ilyen Spelled!");
@@ -62,9 +62,9 @@ public enum Battle {
                 if(t1ChoosenMove != null)
                     t1Choosen.dealDamage(t2Choosen, t1ChoosenMove);
                 t2Choosen.dealDamage(t1Choosen, t2ChoosenMove);
-            } while(t1Choosen.getHp() > 0 && t2Choosen.getHp() > 0);
+            } while(t1Choosen.getBaseStats().get("hp") > 0 && t2Choosen.getBaseStats().get("hp") > 0);
 
-            if(t1Choosen.getHp() <= 0){
+            if(t1Choosen.getBaseStats().get("hp") <= 0){
                 System.out.println("Your pokemon has been fainted!" + '\n' + '\n');
                 t1.setActivePokemons(t1.getActivePokemons()-1);
             } else {
