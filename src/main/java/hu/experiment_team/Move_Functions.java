@@ -3,6 +3,7 @@ package hu.experiment_team;
 import hu.experiment_team.models.Move;
 import hu.experiment_team.models.Pokemon;
 
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -67,10 +68,10 @@ public enum Move_Functions {
     public void Move_Function_002(Pokemon my, Pokemon opp, Move m){
         int damage = getDamage(my, opp, m);
         int ppCounter = 0;
-        if(my.getMoves().get("move1").getActualPP() == 0) ppCounter++;
-        if(my.getMoves().get("move2").getActualPP() == 0) ppCounter++;
-        if(my.getMoves().get("move3").getActualPP() == 0) ppCounter++;
-        if(my.getMoves().get("move4").getActualPP() == 0) ppCounter++;
+        if(my.getMoves().get(1).getActualPP() == 0) ppCounter++;
+        if(my.getMoves().get(2).getActualPP() == 0) ppCounter++;
+        if(my.getMoves().get(3).getActualPP() == 0) ppCounter++;
+        if(my.getMoves().get(4).getActualPP() == 0) ppCounter++;
         if((r.nextInt(100) + 1) <= (m.getAccuracy() + my.getBaseStats().get("accuracy"))){
             if(ppCounter == 3){
                 logger.info(my.getName() + " is struggling!");
@@ -2314,6 +2315,526 @@ public enum Move_Functions {
             logger.info(opp.getName() + " has dealt " + damage + " damage to " + opp.getName() + " with " + m.getDisplayName());
             logger.info(opp.getName() + " now has " + opp.getBaseStats().get("hp") + " health");
         }
+    }
+
+    /**
+     * Function code: 04E.
+     * Decreases the target's Special Attack by 2 stages.  Only works on the opposite gender.
+     * */
+    public void Move_Function_04E(Pokemon my, Pokemon opp, Move m){
+        // TODO -> Nincs még gender.
+        int damage = getDamage(my, opp, m);
+        if((r.nextInt(100) + 1) <= (m.getAccuracy() + my.getBaseStats().get("accuracy"))){
+            opp.setBaseStat("hp", opp.getBaseStats().get("hp") - damage);
+            if( (r.nextInt(100) + 1) <= m.getAdditionalEffectChance()){
+                opp.setStatStage("spattack", opp.getStatStages().get("spattack") - 2);
+                opp.setBaseStat("spattack", (int) Math.ceil(opp.getBaseStats().get("spattack") * 0.5));
+                logger.info(opp.getName() + "'s special attack fell!");
+            }
+            logger.info(opp.getName() + " has dealt " + damage + " damage to " + opp.getName() + " with " + m.getDisplayName());
+            logger.info(opp.getName() + " now has " + opp.getBaseStats().get("hp") + " health");
+        }
+    }
+
+    /**
+     * Function code: 04F.
+     * Decreases the target's Special Defense by 2 stages.
+     * */
+    public void Move_Function_04F(Pokemon my, Pokemon opp, Move m){
+        int damage = getDamage(my, opp, m);
+        if((r.nextInt(100) + 1) <= (m.getAccuracy() + my.getBaseStats().get("accuracy"))){
+            opp.setBaseStat("hp", opp.getBaseStats().get("hp") - damage);
+            if( (r.nextInt(100) + 1) <= m.getAdditionalEffectChance()){
+                opp.setStatStage("spdefense", opp.getStatStages().get("spdefense") - 2);
+                opp.setBaseStat("spdefense", (int) Math.ceil(opp.getBaseStats().get("spdefense") * 0.5));
+                logger.info(opp.getName() + "'s special defense fell!");
+            }
+            logger.info(opp.getName() + " has dealt " + damage + " damage to " + opp.getName() + " with " + m.getDisplayName());
+            logger.info(opp.getName() + " now has " + opp.getBaseStats().get("hp") + " health");
+        }
+    }
+
+    /**
+     * Function code: 050.
+     * Resets all target's stat stages to 0.
+     * */
+    public void Move_Function_050(Pokemon my, Pokemon opp, Move m){
+        int damage = getDamage(my, opp, m);
+        if((r.nextInt(100) + 1) <= (m.getAccuracy() + my.getBaseStats().get("accuracy"))){
+            opp.setBaseStat("hp", opp.getBaseStats().get("hp") - damage);
+
+            opp.getBaseStats().put("hp", opp.getMaxStats().get("hp"));
+            opp.getBaseStats().put("attack", opp.getMaxStats().get("attack"));
+            opp.getBaseStats().put("defense", opp.getMaxStats().get("defense"));
+            opp.getBaseStats().put("speed", opp.getMaxStats().get("speed"));
+            opp.getBaseStats().put("spattack", opp.getMaxStats().get("spattack"));
+            opp.getBaseStats().put("spdefense", opp.getMaxStats().get("spdefense"));
+            opp.getBaseStats().put("accuracy", 0);
+            opp.getBaseStats().put("evasion", 0);
+
+            opp.getStatStages().put("hp", 0);
+            opp.getStatStages().put("attack", 0);
+            opp.getStatStages().put("defense", 0);
+            opp.getStatStages().put("spattack", 0);
+            opp.getStatStages().put("spdefense", 0);
+            opp.getStatStages().put("speed", 0);
+            opp.getStatStages().put("accuracy", 0);
+            opp.getStatStages().put("evasion", 0);
+
+            logger.info(opp.getName() + " has dealt " + damage + " damage to " + opp.getName() + " with " + m.getDisplayName());
+            logger.info(opp.getName() + " now has " + opp.getBaseStats().get("hp") + " health");
+            logger.info(opp.getName() + "'s stat changes were removed!");
+        }
+    }
+
+    /**
+     * Function code: 051.
+     * Resets all stat stages for all battlers to 0.
+     * */
+    public void Move_Function_051(Pokemon my, Pokemon opp, Move m){
+        // TODO -> Nincs több pokémonos fight.
+        int damage = getDamage(my, opp, m);
+        if((r.nextInt(100) + 1) <= (m.getAccuracy() + my.getBaseStats().get("accuracy"))){
+            opp.setBaseStat("hp", opp.getBaseStats().get("hp") - damage);
+
+            opp.getBaseStats().put("hp", opp.getMaxStats().get("hp"));
+            opp.getBaseStats().put("attack", opp.getMaxStats().get("attack"));
+            opp.getBaseStats().put("defense", opp.getMaxStats().get("defense"));
+            opp.getBaseStats().put("speed", opp.getMaxStats().get("speed"));
+            opp.getBaseStats().put("spattack", opp.getMaxStats().get("spattack"));
+            opp.getBaseStats().put("spdefense", opp.getMaxStats().get("spdefense"));
+            opp.getBaseStats().put("accuracy", 0);
+            opp.getBaseStats().put("evasion", 0);
+
+            opp.getStatStages().put("hp", 0);
+            opp.getStatStages().put("attack", 0);
+            opp.getStatStages().put("defense", 0);
+            opp.getStatStages().put("spattack", 0);
+            opp.getStatStages().put("spdefense", 0);
+            opp.getStatStages().put("speed", 0);
+            opp.getStatStages().put("accuracy", 0);
+            opp.getStatStages().put("evasion", 0);
+
+            logger.info(opp.getName() + " has dealt " + damage + " damage to " + opp.getName() + " with " + m.getDisplayName());
+            logger.info(opp.getName() + " now has " + opp.getBaseStats().get("hp") + " health");
+            logger.info(opp.getName() + "'s stat changes were removed!");
+        }
+    }
+
+    /**
+     * Function code: 052.
+     * User and target swap their Attack and Special Attack stat stages.
+     * */
+    public void Move_Function_052(Pokemon my, Pokemon opp, Move m){
+        int damage = getDamage(my, opp, m);
+        if((r.nextInt(100) + 1) <= (m.getAccuracy() + my.getBaseStats().get("accuracy"))){
+            opp.setBaseStat("hp", opp.getBaseStats().get("hp") - damage);
+
+            int opAttStage = opp.getStatStages().get("attack");
+            int opSpAttStage = opp.getStatStages().get("spattack");
+            int myAttStage = my.getStatStages().get("attack");
+            int mySpAttStage = my.getStatStages().get("spattack");
+
+            opp.setBaseStat("attack", opp.getMaxStats().get("attack"));
+            opp.setBaseStat("spattack", opp.getMaxStats().get("spattack"));
+            my.setBaseStat("attack", my.getMaxStats().get("attack"));
+            my.setBaseStat("spattack", my.getMaxStats().get("spattack"));
+
+            if(myAttStage > 0)
+                opp.setBaseStat("attack", opp.getBaseStats().get("attack")*((int)Math.ceil(myAttStage*1.25)));
+            if(mySpAttStage > 0)
+                opp.setBaseStat("spattack", opp.getBaseStats().get("spattack")*((int)Math.ceil(mySpAttStage*1.25)));
+            if(opAttStage > 0)
+                my.setBaseStat("attack", my.getBaseStats().get("attack") * ((int) Math.ceil(opAttStage * 1.25)));
+            if(opSpAttStage > 0)
+                my.setBaseStat("spattack", my.getBaseStats().get("spattack") * ((int) Math.ceil(opSpAttStage * 1.25)));
+
+            my.setStatStage("attack", opAttStage);
+            my.setStatStage("spattack", opSpAttStage);
+            opp.setStatStage("attack", myAttStage);
+            opp.setStatStage("spattack", mySpAttStage);
+
+            logger.info("User and target swap their Attack and Special Attack stat stages.");
+        }
+    }
+
+    /**
+     * Function code: 053.
+     * User and target swap their Defense and Special Defense stat stages.
+     * */
+    public void Move_Function_053(Pokemon my, Pokemon opp, Move m){
+        int damage = getDamage(my, opp, m);
+        if((r.nextInt(100) + 1) <= (m.getAccuracy() + my.getBaseStats().get("accuracy"))){
+            opp.setBaseStat("hp", opp.getBaseStats().get("hp") - damage);
+
+            int opDefStage = opp.getStatStages().get("defense");
+            int opSpDefStage = opp.getStatStages().get("spdefense");
+            int myDefStage = my.getStatStages().get("defense");
+            int mySpDefStage = my.getStatStages().get("spdefense");
+
+            opp.setBaseStat("defense", opp.getMaxStats().get("defense"));
+            opp.setBaseStat("spdefense", opp.getMaxStats().get("spdefense"));
+            my.setBaseStat("defense", my.getMaxStats().get("defense"));
+            my.setBaseStat("spdefense", my.getMaxStats().get("spdefense"));
+
+            if(myDefStage > 0)
+                opp.setBaseStat("defense", opp.getBaseStats().get("defense")*((int)Math.ceil(myDefStage*1.25)));
+            if(mySpDefStage > 0)
+                opp.setBaseStat("spdefense", opp.getBaseStats().get("spdefense")*((int)Math.ceil(mySpDefStage*1.25)));
+            if(opDefStage > 0)
+                my.setBaseStat("defense", my.getBaseStats().get("defense") * ((int) Math.ceil(opDefStage * 1.25)));
+            if(opSpDefStage > 0)
+                my.setBaseStat("spdefense", my.getBaseStats().get("spdefense") * ((int) Math.ceil(opSpDefStage * 1.25)));
+
+            my.setStatStage("defense", opDefStage);
+            my.setStatStage("spdefense", opSpDefStage);
+            opp.setStatStage("defense", myDefStage);
+            opp.setStatStage("spdefense", mySpDefStage);
+
+            logger.info("User and target swap their defense and special defense stat stages.");
+        }
+    }
+
+    /**
+     * Function code: 054.
+     * User and target swap all their stat stages.
+     * */
+    public void Move_Function_054(Pokemon my, Pokemon opp, Move m){
+        Map<String, Integer> oppStages = opp.getStatStages();
+        Map<String, Integer> myStages = my.getStatStages();
+
+        opp.setBaseStat("attack", opp.getMaxStats().get("attack"));
+        opp.setBaseStat("spattack", opp.getMaxStats().get("spattack"));
+        opp.setBaseStat("defense", opp.getMaxStats().get("defense"));
+        opp.setBaseStat("spdefense", opp.getMaxStats().get("spdefense"));
+        opp.setBaseStat("speed", opp.getMaxStats().get("speed"));
+        opp.setBaseStat("accuracy", opp.getMaxStats().get("accuracy"));
+        opp.setBaseStat("evasion", opp.getMaxStats().get("evasion"));
+
+        my.setBaseStat("attack", my.getMaxStats().get("attack"));
+        my.setBaseStat("spattack", my.getMaxStats().get("spattack"));
+        my.setBaseStat("defense", my.getMaxStats().get("defense"));
+        my.setBaseStat("spdefense", my.getMaxStats().get("spdefense"));
+        my.setBaseStat("speed", my.getMaxStats().get("speed"));
+        my.setBaseStat("accuracy", my.getMaxStats().get("accuracy"));
+        my.setBaseStat("evasion", my.getMaxStats().get("evasion"));
+
+        if(oppStages.get("attack") > 0)
+            my.setBaseStat("attack", my.getBaseStats().get("attack")*((int)Math.ceil(oppStages.get("attack")*1.25)));
+        if(oppStages.get("defense") > 0)
+            my.setBaseStat("defense", my.getBaseStats().get("defense")*((int)Math.ceil(oppStages.get("defense")*1.25)));
+        if(oppStages.get("spattack") > 0)
+            my.setBaseStat("spattack", my.getBaseStats().get("spattack") * ((int) Math.ceil(oppStages.get("spattack") * 1.25)));
+        if(oppStages.get("spdefense") > 0)
+            my.setBaseStat("spdefense", my.getBaseStats().get("spdefense") * ((int) Math.ceil(oppStages.get("spdefense") * 1.25)));
+        if(oppStages.get("speed") > 0)
+            my.setBaseStat("speed", my.getBaseStats().get("speed") * ((int) Math.ceil(oppStages.get("speed") * 1.25)));
+        if(oppStages.get("accuracy") > 0)
+            my.setBaseStat("accuracy", my.getBaseStats().get("accuracy") * ((int) Math.ceil(oppStages.get("accuracy") * 1.25)));
+        if(oppStages.get("evasion") > 0)
+            my.setBaseStat("evasion", my.getBaseStats().get("evasion") * ((int) Math.ceil(oppStages.get("evasion") * 1.25)));
+
+        if(myStages.get("attack") > 0)
+            opp.setBaseStat("attack", opp.getBaseStats().get("attack")*((int)Math.ceil(myStages.get("attack")*1.25)));
+        if(myStages.get("defense") > 0)
+            opp.setBaseStat("defense", opp.getBaseStats().get("defense")*((int)Math.ceil(myStages.get("defense")*1.25)));
+        if(myStages.get("spattack") > 0)
+            opp.setBaseStat("spattack", opp.getBaseStats().get("spattack") * ((int) Math.ceil(myStages.get("spattack") * 1.25)));
+        if(myStages.get("spdefense") > 0)
+            opp.setBaseStat("spdefense", opp.getBaseStats().get("spdefense") * ((int) Math.ceil(myStages.get("spdefense") * 1.25)));
+        if(myStages.get("speed") > 0)
+            opp.setBaseStat("speed", opp.getBaseStats().get("speed") * ((int) Math.ceil(myStages.get("speed") * 1.25)));
+        if(myStages.get("accuracy") > 0)
+            opp.setBaseStat("accuracy", opp.getBaseStats().get("accuracy") * ((int) Math.ceil(myStages.get("accuracy") * 1.25)));
+        if(myStages.get("evasion") > 0)
+            opp.setBaseStat("evasion", opp.getBaseStats().get("evasion") * ((int) Math.ceil(myStages.get("evasion") * 1.25)));
+
+        opp.setStatStage("attack", my.getStatStages().get("attack"));
+        opp.setStatStage("spattack", my.getStatStages().get("spattack"));
+        opp.setStatStage("defense", my.getStatStages().get("defense"));
+        opp.setStatStage("spdefense", my.getStatStages().get("spdefense"));
+        opp.setStatStage("speed", my.getStatStages().get("speed"));
+        opp.setStatStage("accuracy", my.getStatStages().get("accuracy"));
+        opp.setStatStage("evasion", my.getStatStages().get("evasion"));
+
+        my.setStatStage("attack", opp.getStatStages().get("attack"));
+        my.setStatStage("spattack", opp.getStatStages().get("spattack"));
+        my.setStatStage("defense", opp.getStatStages().get("defense"));
+        my.setStatStage("spdefense", opp.getStatStages().get("spdefense"));
+        my.setStatStage("speed", opp.getStatStages().get("speed"));
+        my.setStatStage("accuracy", opp.getStatStages().get("accuracy"));
+        my.setStatStage("evasion", opp.getStatStages().get("evasion"));
+
+        logger.info(my.getName() + " switched its stat boosts with " + opp.getName());
+    }
+
+    /**
+     * Function code: 055.
+     * User copies the target's stat stages.
+     * */
+    public void Move_Function_055(Pokemon my, Pokemon opp, Move m){
+        Map<String, Integer> oppStages = opp.getStatStages();
+
+        my.setBaseStat("attack", my.getMaxStats().get("attack"));
+        my.setBaseStat("spattack", my.getMaxStats().get("spattack"));
+        my.setBaseStat("defense", my.getMaxStats().get("defense"));
+        my.setBaseStat("spdefense", my.getMaxStats().get("spdefense"));
+        my.setBaseStat("speed", my.getMaxStats().get("speed"));
+        my.setBaseStat("accuracy", my.getMaxStats().get("accuracy"));
+        my.setBaseStat("evasion", my.getMaxStats().get("evasion"));
+
+        if(oppStages.get("attack") > 0)
+            my.setBaseStat("attack", my.getBaseStats().get("attack")*((int)Math.ceil(oppStages.get("attack")*1.25)));
+        if(oppStages.get("defense") > 0)
+            my.setBaseStat("defense", my.getBaseStats().get("defense")*((int)Math.ceil(oppStages.get("defense")*1.25)));
+        if(oppStages.get("spattack") > 0)
+            my.setBaseStat("spattack", my.getBaseStats().get("spattack") * ((int) Math.ceil(oppStages.get("spattack") * 1.25)));
+        if(oppStages.get("spdefense") > 0)
+            my.setBaseStat("spdefense", my.getBaseStats().get("spdefense") * ((int) Math.ceil(oppStages.get("spdefense") * 1.25)));
+        if(oppStages.get("speed") > 0)
+            my.setBaseStat("speed", my.getBaseStats().get("speed") * ((int) Math.ceil(oppStages.get("speed") * 1.25)));
+        if(oppStages.get("accuracy") > 0)
+            my.setBaseStat("accuracy", my.getBaseStats().get("accuracy") * ((int) Math.ceil(oppStages.get("accuracy") * 1.25)));
+        if(oppStages.get("evasion") > 0)
+            my.setBaseStat("evasion", my.getBaseStats().get("evasion") * ((int) Math.ceil(oppStages.get("evasion") * 1.25)));
+
+        my.setStatStage("attack", opp.getStatStages().get("attack"));
+        my.setStatStage("spattack", opp.getStatStages().get("spattack"));
+        my.setStatStage("defense", opp.getStatStages().get("defense"));
+        my.setStatStage("spdefense", opp.getStatStages().get("spdefense"));
+        my.setStatStage("speed", opp.getStatStages().get("speed"));
+        my.setStatStage("accuracy", opp.getStatStages().get("accuracy"));
+        my.setStatStage("evasion", opp.getStatStages().get("evasion"));
+
+        logger.info(my.getName() + " copied " + opp.getName() + "'s stat changes!");
+    }
+
+    /**
+     * Function code: 056.
+     * For 5 rounds, user's and ally's stat stages cannot be lowered by foes.
+     * */
+    public void Move_Function_056(Pokemon my, Pokemon opp, Move m){
+        // TODO -> Majd megcsináljuk lel.
+    }
+
+    /**
+     * Function code: 057.
+     * Swaps the user's Attack and Defense.
+     * */
+    public void Move_Function_057(Pokemon my, Pokemon opp, Move m){
+        int myAtt = my.getBaseStats().get("attack");
+        int myDef = my.getBaseStats().get("defense");
+
+        my.setBaseStat("attack", myDef);
+        my.setBaseStat("defense", myAtt);
+
+        logger.info(my.getName() + " switched its Attack and Defense!");
+    }
+
+    /**
+     * Function code: 058.
+     * Averages the user's and target's Attack and Special Attack (separately).
+     * */
+    public void Move_Function_058(Pokemon my, Pokemon opp, Move m){
+        int att = (my.getBaseStats().get("attack") + opp.getBaseStats().get("attack")) / 2;
+        int spAttack = (my.getBaseStats().get("spattack") + opp.getBaseStats().get("spattack")) / 2;
+
+        my.setBaseStat("attack", att);
+        my.setBaseStat("spattack", spAttack);
+        opp.setBaseStat("attack", att);
+        opp.setBaseStat("spattack", spAttack);
+
+        logger.info(my.getName() + " shared its power with the target!");
+    }
+
+    /**
+     * Function code: 059.
+     * Averages the user's and target's Defense and Special Defense (separately).
+     * */
+    public void Move_Function_059(Pokemon my, Pokemon opp, Move m){
+        int def = (my.getBaseStats().get("defense") + opp.getBaseStats().get("defense")) / 2;
+        int spdefense = (my.getBaseStats().get("spdefense") + opp.getBaseStats().get("spdefense")) / 2;
+
+        my.setBaseStat("defense", def);
+        my.setBaseStat("spdefense", spdefense);
+        opp.setBaseStat("defense", def);
+        opp.setBaseStat("spdefense", spdefense);
+
+        logger.info(my.getName() + " shared its guard with the target!");
+    }
+
+    /**
+     * Function code: 05A.
+     * Averages the user's and target's current HP.
+     * */
+    public void Move_Function_05A(Pokemon my, Pokemon opp, Move m){
+        int hp = (my.getBaseStats().get("hp") + opp.getBaseStats().get("hp")) / 2;
+
+        my.setBaseStat("hp", hp);
+        opp.setBaseStat("hp", hp);
+
+        logger.info("The battlers shared their pain!");
+    }
+
+    /**
+     * Function code: 05B.
+     * For 5 rounds, doubles the user's and ally's Speed.
+     * */
+    public void Move_Function_05B(Pokemon my, Pokemon opp, Move m){
+        // TODO -> Kell még az 5körös cucc meg az allyk.
+        my.setBaseStat("speed", (my.getBaseStats().get("speed") * 2));
+
+        logger.info("The tailwind blew from behind your team!");
+    }
+
+    /**
+     * Function code: 05C.
+     * This move turns into the last move used by the target, until user switches out.
+     * */
+    public void Move_Function_05C(Pokemon my, Pokemon opp, Move m){
+
+        // TODO -> until user switches out.
+
+        if(opp.getLastMove() == null ||
+           opp.getLastMove().getInternalName().equals("CHATTER") ||
+           opp.getLastMove().getInternalName().equals("MIMIC") ||
+           opp.getLastMove().getInternalName().equals("SKETCH") ||
+           opp.getLastMove().getInternalName().equals("STRUGGLE") ||
+           opp.getLastMove().getInternalName().equals("METRONOME")){
+           logger.info("It failed!");
+        } else {
+            int index = Utility.INSTANCE.getIndex(my.getMoves(), m.getInternalName());
+            if(index != -1)
+                my.getMoves().set(index, opp.getLastMove());
+            else
+                logger.info("It failed!");
+        }
+
+        logger.info(my.getName() + " learned " + m.getDisplayName() + "!");
+    }
+
+    /**
+     * Function code: 05D.
+     * This move turns into the last move used by the target, until user switches out.
+     * */
+    public void Move_Function_05D(Pokemon my, Pokemon opp, Move m){
+
+        // TODO -> until user switches out.
+
+        if(opp.getLastMove() == null ||
+                opp.getLastMove().getInternalName().equals("CHATTER") ||
+                opp.getLastMove().getInternalName().equals("MIMIC") ||
+                opp.getLastMove().getInternalName().equals("SKETCH") ||
+                opp.getLastMove().getInternalName().equals("STRUGGLE") ||
+                opp.getLastMove().getInternalName().equals("METRONOME")){
+            logger.info("It failed!");
+        } else {
+            int index = Utility.INSTANCE.getIndex(my.getMoves(), m.getInternalName());
+            if(index != -1)
+                my.getMoves().set(index, opp.getLastMove());
+            else
+                logger.info("It failed!");
+        }
+
+        logger.info(my.getName() + " sketched " + m.getDisplayName() + "!");
+    }
+
+    /**
+     * Function code: 05E.
+     * Conversion changes the user's current type to match the type of the first of the user's moves.
+     * */
+    public void Move_Function_05E(Pokemon my, Pokemon opp, Move m){
+        if(my.getMoves().get(0) != null){
+            my.setType1(my.getMoves().get(0).getType());
+        } else {
+            logger.info("It failed!");
+        }
+        logger.info(my.getName() + " transformed into " + my.getMoves().get(0).getType() + " type!");
+    }
+
+    /**
+     * Function code: 05F.
+     * Changes user's type to a random one that resists the last attack against user.
+     * */
+    public void Move_Function_05F(Pokemon my, Pokemon opp, Move m){
+
+        // TODO -> Ez nem biztos, hogy jó.
+
+        my.setType1(opp.getLastMove().getType());
+        logger.info(my.getName() + " transformed into " + opp.getLastMove().getType() + " type!");
+    }
+
+    /**
+     * Function code: 060.
+     * Changes user's type depending on the environment.
+     * */
+    public void Move_Function_060(Pokemon my, Pokemon opp, Move m){
+
+        // TODO -> Nincs még environment.
+
+    }
+
+    /**
+     * Function code: 061.
+     * Target becomes Water type.
+     * */
+    public void Move_Function_061(Pokemon my, Pokemon opp, Move m){
+        opp.setType1("WATER");
+        logger.info(my.getName() + " transformed into Water type!");
+    }
+
+    /**
+     * Function code: 062.
+     * User copes target's types.
+     * */
+    public void Move_Function_062(Pokemon my, Pokemon opp, Move m){
+        my.setType1(opp.getType1());
+        logger.info(my.getName() + "'s type changed to match the target!");
+    }
+
+    /**
+     * Function code: 063.
+     * @see <a href="http://bulbapedia.bulbagarden.net/wiki/Simple_(Ability)">Bubapedia</a>
+     * */
+    public void Move_Function_063(Pokemon my, Pokemon opp, Move m){
+        // TODO -> nincs még ability scriptelve.
+    }
+
+    /**
+     * Function code: 064.
+     * Target's ability becomes Insomnia.
+     * */
+    public void Move_Function_064(Pokemon my, Pokemon opp, Move m){
+        // TODO -> nincs még ability scriptelve.
+    }
+
+    /**
+     * Function code: 065.
+     * User copes target's ability.
+     * */
+    public void Move_Function_065(Pokemon my, Pokemon opp, Move m){
+        my.setHiddenAbility(opp.getHiddenAbility());
+        logger.info(my.getName() + " copied " + opp.getName() + "'s " + opp.getHiddenAbility() + "!");
+    }
+
+    /**
+     * Function code: 066.
+     * Target copies user's ability.
+     * */
+    public void Move_Function_066(Pokemon my, Pokemon opp, Move m){
+        opp.setHiddenAbility(my.getHiddenAbility());
+        logger.info(opp.getName() + " copied " + my.getName() + "'s " + my.getHiddenAbility() + "!");
+    }
+
+    /**
+     * Function code: 067.
+     * User and target swap abilities.
+     * */
+    public void Move_Function_067(Pokemon my, Pokemon opp, Move m){
+        String myAbbility = my.getHiddenAbility();
+        my.setHiddenAbility(opp.getHiddenAbility());
+        opp.setHiddenAbility(myAbbility);
+        logger.info(opp.getName() + " swapped its " + opp.getHiddenAbility() + " ability with its target's " + my.getHiddenAbility() + " ability!");
     }
 
 }

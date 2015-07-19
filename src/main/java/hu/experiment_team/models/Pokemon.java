@@ -4,9 +4,7 @@ import hu.experiment_team.Move_Functions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * This class contains information about the pokemons.
@@ -51,7 +49,7 @@ public class Pokemon {
     /**
      * The primary and secondary elemental types of this species.
      * */
-    private final String type1;
+    private String type1;
     /**
      * Type2 is optional.
      * */
@@ -147,7 +145,7 @@ public class Pokemon {
      * Is the internal names of those abilities, separated by commas.
      * Pokémon cannot have any hidden ability naturally, and must be specially given one.
      * */
-    private final String hiddenAbility;
+    private String hiddenAbility;
     /**
      * The egg groups this species belongs to.
      * Is either one word or two comma-separated words, depending on how many egg groups this species belongs to.
@@ -226,7 +224,7 @@ public class Pokemon {
      * A pokémon első képességei
      * Ez a mező csak akkor használatos, ha a Pokémont valamelyik trainer birtokolja, azaz benne van az ownedPokemons táblába az adatbázisban.
      * */
-    private Map<Integer, Move> moves;
+    private List<Move> moves;
     /**
      * Ebben a Map-ban tároljuk a pokémon alapértékeit, azaz a buffok nélküli statokat.
      * Erre az effektek miatt van szükség.
@@ -251,6 +249,7 @@ public class Pokemon {
     private Map<String, Integer> counters;
     private Map<String, Integer> statStages;
     private Map<String, Integer> flags;
+    private Move lastMove;
 
     @Override
     public String toString() {
@@ -393,11 +392,11 @@ public class Pokemon {
         battlerEnemyY = builder.battlerEnemyY;
         battlerAltitude = builder.battlerAltitude;
         level = builder.level;
-        moves = new HashMap<Integer, Move>(){{
-            put(1, builder.move1);
-            put(2, builder.move2);
-            put(3, builder.move3);
-            put(4, builder.move4);
+        moves = new ArrayList<Move>(){{
+            add(builder.move1);
+            add(builder.move2);
+            add(builder.move3);
+            add(builder.move4);
         }};
         ownedID = builder.ownedID;
         maxStats = new HashMap<String, Integer>(){{
@@ -429,7 +428,10 @@ public class Pokemon {
             put("flinched", 0);
             put("minimized", 0);
             put("safeguarded", 0);
+            put("simpled", 0);
+            put("insomnia", 0);
         }};
+        lastMove = null;
     }
 
     public int getOwnerId() {
@@ -462,6 +464,10 @@ public class Pokemon {
 
     public String getType1() {
         return type1;
+    }
+
+    public void setType1(String val){
+        this.type1 = val;
     }
 
     public String getType2() {
@@ -528,6 +534,10 @@ public class Pokemon {
         return hiddenAbility;
     }
 
+    public void setHiddenAbility(String val) {
+        this.hiddenAbility = val;
+    }
+
     public String getCompatibility() {
         return compatibility;
     }
@@ -564,12 +574,12 @@ public class Pokemon {
         this.level = level;
     }
 
-    public Map<Integer, Move> getMoves() {
+    public List<Move> getMoves() {
         return moves;
     }
 
-    public void setMove(Integer i, Move m) {
-        this.moves.put(i, m);
+    public void addMove(Move m) {
+        this.moves.add(m);
     }
 
     public Map<String, Integer> getMaxStats() {
@@ -612,6 +622,14 @@ public class Pokemon {
         this.flags.put(s, i);
     }
 
+    public Move getLastMove(){
+        return lastMove;
+    }
+
+    public void setLastMove(Move val){
+        this.lastMove = val;
+    }
+
     /**
      * This method counts the size of the inflicted damage
      * @param opponent Object of the pokemon which suffer the damage
@@ -621,6 +639,7 @@ public class Pokemon {
 
         Random r = new Random();
         int rand = r.nextInt(99) + 1;
+        this.lastMove = m;
 
         if((this.getStatusEffect() != 2) && (this.getStatusEffect() != 3) && (this.getStatusEffect() != 6) && (this.getStatusEffect() != 7) && (this.getStatusEffect() != 8)){
 

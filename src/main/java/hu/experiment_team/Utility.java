@@ -1,8 +1,11 @@
 package hu.experiment_team;
 
+import hu.experiment_team.models.Move;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * This class contains the utility methods like password encryption to SHA1 etc..
@@ -52,6 +55,14 @@ public enum Utility {
         } else {
             return String.valueOf(pokemonId);
         }
+    }
+
+    public int getIndex(List<Move> l, String s){
+        for(int i = 0; i < l.size(); i++){
+            if(l.get(i).getInternalName().equals(s))
+                return i;
+        }
+        return -1;
     }
 
 }
